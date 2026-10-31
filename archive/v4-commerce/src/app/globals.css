@@ -1,0 +1,326 @@
+@import "tailwindcss";
+@import "../styles/editorial.css";
+@import "../styles/commerce.css";
+
+/*
+ * KAZE — Pearl White Cinematic.
+ * Colores de marca: brand/colores/tokens.json. Perla y marfil son la base
+ * de esta dirección; crema y negro siguen siendo la identidad, tostado un
+ * acento escaso.
+ */
+@theme {
+  --color-pearl: #f7f5f0;
+  --color-crema: #f3ecdf;
+  --color-ivory: #e8e5df;
+  --color-ink: #151311;
+  --color-ink-muted: #5f564c;
+  --color-tostado: #84532e;
+  --color-linea: #d6c8ae;
+
+  --font-display: var(--font-shippori), "Hiragino Mincho ProN", Georgia, serif;
+  --font-sans: var(--font-instrument), system-ui, sans-serif;
+}
+
+:root {
+  --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html {
+  background: var(--color-pearl);
+  -webkit-text-size-adjust: 100%;
+  /* clip (no hidden): recorta sin crear un contenedor de scroll, así el
+     sticky del hero sigue funcionando y el viewport móvil no se ensancha. */
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+  background: var(--color-pearl);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 24px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-ink);
+  color: var(--color-pearl);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-tostado);
+  outline-offset: 2px;
+}
+
+/* ——— Tipografía (tokens del manual, escalados para móvil) ——— */
+@layer components {
+  .t-display-xl {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .t-display {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.125rem, 4.2vw, 3.5rem);
+    line-height: 1.04;
+    text-wrap: balance;
+  }
+  .t-body-lg {
+    font-size: 18px;
+    line-height: 28px;
+  }
+  .t-label {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .t-caption {
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  /* ——— Botones (brand/aplicaciones/botones.html) ——— */
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 14px 28px;
+    border-radius: 2px;
+    border: 1px solid var(--color-ink);
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    overflow: hidden;
+    isolation: isolate;
+    transition:
+      color 420ms var(--ease-editorial),
+      letter-spacing 420ms var(--ease-editorial);
+  }
+  /* Hover: la tinta se retira hacia arriba y deja el perla. */
+  .btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--color-ink);
+    transform-origin: top;
+    transition: transform 420ms var(--ease-editorial);
+  }
+  .btn-primary {
+    color: var(--color-pearl);
+  }
+  .btn-primary:hover {
+    color: var(--color-ink);
+    letter-spacing: 0.2em;
+  }
+  .btn-primary:hover::before {
+    transform: scaleY(0);
+  }
+}
+
+/* ——— Encabezado ——— */
+.brand-header {
+  transition: background-color 420ms var(--ease-editorial);
+}
+/* Sobre el video, un velo perla muy suave mantiene legible la navegación. */
+.brand-header::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 -40px;
+  z-index: -1;
+  background: linear-gradient(180deg, rgb(247 245 240 / 0.82), rgb(247 245 240 / 0));
+  pointer-events: none;
+  transition: opacity 420ms var(--ease-editorial);
+}
+:root[data-header-solid="true"] .brand-header::before {
+  opacity: 0;
+}
+:root[data-header-solid="true"] .brand-header {
+  background: var(--color-pearl);
+}
+
+.nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--color-ink);
+  text-decoration: none;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 420ms var(--ease-editorial);
+}
+.nav-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ——— Experiencia cinematográfica ——— */
+.cinematic-section {
+  /* ~0,75 pantallas de scroll por clip: el hero acompaña, no retiene.
+     El CTA "Explorar cafés" salta directo a la colección. */
+  height: 400svh;
+}
+
+html {
+  scroll-padding-top: 72px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+.cinematic-poster {
+  max-width: none;
+}
+
+/* Velo perla del lado del texto: solo legibilidad, sin protagonismo. */
+.legibility-wash {
+  background: linear-gradient(
+    90deg,
+    rgb(247 245 240 / 0.78) 0%,
+    rgb(247 245 240 / 0.45) 30%,
+    rgb(247 245 240 / 0) 52%
+  );
+}
+@media (max-width: 767px) {
+  .legibility-wash {
+    background: linear-gradient(
+      180deg,
+      rgb(247 245 240 / 0.9) 0%,
+      rgb(247 245 240 / 0.6) 34%,
+      rgb(247 245 240 / 0) 50%
+    );
+  }
+}
+
+.stage-fade {
+  height: 22%;
+  background: linear-gradient(180deg, rgb(247 245 240 / 0), var(--color-pearl));
+  /* Aparece solo en el último tramo de la secuencia. */
+  opacity: clamp(0, calc((var(--kz-progress, 0) - 0.9) * 10), 1);
+}
+
+.moment-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.moment-rule {
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  margin-right: 12px;
+  vertical-align: middle;
+  background: currentColor;
+  transform-origin: left;
+}
+
+/* Indicador de progreso: abajo a la izquierda, lejos del sujeto del video. */
+.scroll-progress {
+  position: absolute;
+  z-index: 20;
+  left: 48px;
+  bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  --kz-progress: 0;
+}
+.scroll-progress-track {
+  position: relative;
+  width: 120px;
+  height: 1px;
+  background: var(--color-ivory);
+}
+.scroll-progress-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--color-ink);
+  transform-origin: left;
+  transform: scaleX(var(--kz-progress));
+}
+.scroll-progress-marks {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 14px;
+  min-width: 180px;
+}
+.scroll-progress-mark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  gap: 10px;
+  font-size: 11px;
+  line-height: 14px;
+  color: var(--color-ink-muted);
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 420ms var(--ease-editorial),
+    transform 420ms var(--ease-editorial);
+}
+.scroll-progress-index {
+  color: var(--color-tostado);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+}
+.scroll-progress[data-active="0"] [data-chapter="0"],
+.scroll-progress[data-active="1"] [data-chapter="1"],
+.scroll-progress[data-active="2"] [data-chapter="2"],
+.scroll-progress[data-active="3"] [data-chapter="3"] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (max-width: 767px) {
+  .scroll-progress {
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+  }
+  .scroll-progress-track {
+    flex: 1;
+    width: auto;
+  }
+  .scroll-progress-marks {
+    min-width: 0;
+    width: 132px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "granos-macro": {
+    "aspect": 1.3333,
+    "sources": [
+      {
+        "width": 1200,
+        "height": 900
+      },
+      {
+        "width": 700,
+        "height": 526
+      }
+    ]
+  },
+  "ruptura-macro": {
+    "aspect": 1.3333,
+    "sources": [
+      {
+        "width": 1200,
+        "height": 900
+      },
+      {
+        "width": 700,
+        "height": 526
+      }
+    ]
+  },
+  "corriente-vertical": {
+    "aspect": 0.8464,
+    "sources": [
+      {
+        "width": 1300,
+        "height": 1536
+      },
+      {
+        "width": 760,
+        "height": 898
+      }
+    ]
+  },
+  "corriente-taza": {
+    "aspect": 1.7917,
+    "sources": [
+      {
+        "width": 2400,
+        "height": 1340
+      },
+      {
+        "width": 1200,
+        "height": 670
+      }
+    ]
+  },
+  "ritual-amplio": {
+    "aspect": 1.7917,
+    "sources": [
+      {
+        "width": 2400,
+        "height": 1340
+      },
+      {
+        "width": 1400,
+        "height": 782
+      }
+    ]
+  },
+  "ritual-vertical": {
+    "aspect": 0.7813,
+    "sources": [
+      {
+        "width": 1200,
+        "height": 1536
+      },
+      {
+        "width": 720,
+        "height": 922
+      }
+    ]
+  }
+}

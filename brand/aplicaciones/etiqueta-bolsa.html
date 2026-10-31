@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Etiqueta — preview</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Shippori+Mincho+B1:wght@500;600;700&display=swap">
+<style>
+  html, body { margin:0; }
+  body { font-family:var(--font-sans, "Instrument Sans", system-ui, sans-serif); background:var(--surface-raised, #eae0cd); }
+  .stage { display:flex; justify-content:center; gap:var(--space-12, 48px); padding:var(--space-8, 32px); flex-wrap:wrap; }
+  .bag { width:250px; height:390px; background:var(--negro, #151311); position:relative; display:flex; flex-direction:column; align-items:center; padding-top:var(--space-6, 24px); box-sizing:border-box; }
+  .bag::before { content:""; position:absolute; top:var(--space-4, 16px); left:0; right:0; height:1px; background:rgba(243,236,223,.18); }
+  .bag .iso { height:28px; margin-top:var(--space-4, 16px); }
+  .label { margin-top:var(--space-6, 24px); width:196px; background:var(--crema, #f3ecdf); color:var(--negro, #151311); padding:var(--space-6, 24px) var(--space-4, 16px) var(--space-4, 16px); box-sizing:border-box; }
+  .label .word { height:18px; display:block; }
+  .kanji { float:right; font-family:var(--font-display, "Shippori Mincho B1", serif); font-size:20px; line-height:18px; }
+  .lbl { font-size:10px; line-height:14px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:#5f564c; margin:var(--space-6, 24px) 0 var(--space-1, 4px); }
+  .name { font-family:var(--font-display, "Shippori Mincho B1", serif); font-weight:600; font-size:26px; line-height:1.1; margin:0; }
+  .notes { color:#84532e; font-size:13px; line-height:18px; margin:var(--space-2, 8px) 0 var(--space-4, 16px); }
+  dl { margin:0; display:grid; grid-template-columns:auto 1fr; gap:2px var(--space-3, 12px); font-size:11px; line-height:16px; border-top:1px solid #d6c8ae; padding-top:var(--space-2, 8px); }
+  dt { color:#5f564c; } dd { margin:0; text-align:right; }
+  .weight { position:absolute; bottom:var(--space-4, 16px); color:var(--crema, #f3ecdf); font-size:11px; letter-spacing:.16em; font-weight:600; }
+  .bag.alt { background:#b9926a; }
+  .bag.alt .weight { color:var(--negro, #151311); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="bag">
+    <img class="iso" src="../logos/svg/kaze-isotipo-crema.svg" alt="">
+    <div class="label">
+      <span class="kanji">風</span>
+      <img class="word" src="../logos/svg/kaze-logotipo-negro.svg" alt="Kaze">
+      <p class="lbl">Etiopía · Natural</p>
+      <p class="name">Guji</p>
+      <p class="notes">Mandarina, jazmín y miel</p>
+      <dl>
+        <dt>Altura</dt><dd>2.100 m</dd>
+        <dt>Varietal</dt><dd>Heirloom</dd>
+        <dt>Tueste</dt><dd>Claro · 21/10/2026</dd>
+      </dl>
+    </div>
+    <span class="weight">250 G · GRANO</span>
+  </div>
+  <div class="bag alt">
+    <img class="iso" src="../logos/svg/kaze-isotipo-negro.svg" alt="">
+    <div class="label">
+      <span class="kanji">風</span>
+      <img class="word" src="../logos/svg/kaze-logotipo-negro.svg" alt="Kaze">
+      <p class="lbl">Colombia · Lavado</p>
+      <p class="name">Huila</p>
+      <p class="notes">Chocolate amargo y panela</p>
+      <dl>
+        <dt>Altura</dt><dd>1.750 m</dd>
+        <dt>Varietal</dt><dd>Caturra</dd>
+        <dt>Tueste</dt><dd>Medio · 21/10/2026</dd>
+      </dl>
+    </div>
+    <span class="weight">250 G · GRANO</span>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>TarjetaProducto — preview</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Shippori+Mincho+B1:wght@500;600;700&display=swap">
+<style>
+  html, body { margin:0; }
+  body { font-family:var(--font-sans, "Instrument Sans", system-ui, sans-serif); background:var(--surface, #f3ecdf); color:var(--ink, #151311); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:var(--space-8, 32px); padding:var(--space-8, 32px); }
+  .card { background:var(--surface-raised, #eae0cd); display:flex; flex-direction:column; }
+  .media { aspect-ratio:4/3; background:var(--negro, #151311); display:flex; align-items:center; justify-content:center; }
+  .media img { height:56px; }
+  .media.press { background:var(--crema, #f3ecdf); }
+  .press-shape { width:58px; height:92px; border:3px solid var(--negro, #151311); border-top-width:10px; position:relative; }
+  .press-shape::after { content:""; position:absolute; right:-16px; top:18px; width:13px; height:44px; border:3px solid var(--negro, #151311); border-left:0; }
+  .body { padding:var(--space-6, 24px); display:flex; flex-direction:column; gap:var(--space-2, 8px); flex:1; }
+  .lbl { font-size:12px; line-height:16px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-muted, #5f564c); }
+  h3 { font-family:var(--font-display, "Shippori Mincho B1", serif); font-weight:600; font-size:28px; line-height:1.15; margin:0; }
+  .notes { font-size:15px; line-height:24px; color:var(--ink-muted, #5f564c); margin:0; }
+  .foot { display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:var(--space-4, 16px); border-top:1px solid var(--line, #d6c8ae); }
+  .price { color:var(--accent, #84532e); font-weight:600; font-size:18px; }
+  .btn { font:inherit; font-size:12px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; padding:var(--space-3, 12px) var(--space-4, 16px); border-radius:var(--radius-sm, 2px); border:1px solid var(--ink, #151311); background:var(--ink, #151311); color:var(--on-ink, #f3ecdf); }
+</style>
+</head>
+<body>
+<div class="grid">
+  <article class="card">
+    <div class="media"><img src="../logos/svg/kaze-isotipo-crema.svg" alt=""></div>
+    <div class="body">
+      <span class="lbl">Etiopía · Natural</span>
+      <h3>Guji</h3>
+      <p class="notes">Mandarina, jazmín y miel</p>
+      <div class="foot"><span class="price">$ 14.900</span><button class="btn">Agregar</button></div>
+    </div>
+  </article>
+  <article class="card">
+    <div class="media"><img src="../logos/svg/kaze-isotipo-crema.svg" alt=""></div>
+    <div class="body">
+      <span class="lbl">Colombia · Lavado</span>
+      <h3>Huila</h3>
+      <p class="notes">Chocolate amargo y panela</p>
+      <div class="foot"><span class="price">$ 12.500</span><button class="btn">Agregar</button></div>
+    </div>
+  </article>
+  <article class="card">
+    <div class="media press"><div class="press-shape" aria-hidden="true"></div></div>
+    <div class="body">
+      <span class="lbl">Accesorios · 600 ml</span>
+      <h3>Prensa francesa</h3>
+      <p class="notes">Vidrio y acero, con el isotipo grabado</p>
+      <div class="foot"><span class="price">$ 38.000</span><button class="btn">Agregar</button></div>
+    </div>
+  </article>
+</div>
+</body>
+</html>

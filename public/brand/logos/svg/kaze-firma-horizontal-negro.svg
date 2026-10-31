@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64" width="280" height="64" role="img" aria-label="Kaze"><title>Kaze</title><g fill="#151311"><defs><mask id="kz-negro" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64"><rect width="64" height="64" fill="#fff"/><path d="M18 51C28 44 26 36 32 32C38 28 36 19 46 13" fill="none" stroke="#000" stroke-width="3.6" stroke-linecap="round"/></mask></defs><g mask="url(#kz-negro)"><ellipse cx="32" cy="32" rx="19" ry="27" transform="rotate(35 32 32)"/></g><g transform="translate(88 8)"><g>
+<rect x="0" y="0" width="6" height="48"/>
+<polygon points="32,0 40.5,0 6,33 6,24.8"/>
+<polygon points="15.5,21.5 20.6,16.9 42,48 33.5,48"/>
+<polygon points="69,0 75,0 96,48 89.5,48 72,8 54.5,48 48,48"/>
+<rect x="110" y="0" width="34" height="6"/><rect x="110" y="42" width="34" height="6"/>
+<polygon points="137,6 144,6 117,42 110,42"/>
+<rect x="162" y="0" width="30" height="6"/><rect x="170" y="21" width="22" height="6"/><rect x="162" y="42" width="30" height="6"/>
+</g></g></g></svg>

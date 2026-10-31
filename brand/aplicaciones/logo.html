@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Logo — preview</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Shippori+Mincho+B1:wght@500;600;700&display=swap">
+<style>
+  html, body { margin:0; }
+  body { font-family:var(--font-sans, "Instrument Sans", system-ui, sans-serif); color:var(--ink, #151311); background:var(--surface, #f3ecdf); }
+  .grid { display:grid; grid-template-columns:1fr 1fr; min-height:320px; }
+  .panel { padding:var(--space-8, 32px); display:flex; flex-direction:column; justify-content:space-between; gap:var(--space-6, 24px); }
+  .on-crema { background:var(--crema, #f3ecdf); color:var(--negro, #151311); }
+  .on-negro { background:var(--negro, #151311); color:var(--crema, #f3ecdf); }
+  .row { display:flex; align-items:flex-end; gap:var(--space-8, 32px); flex-wrap:wrap; }
+  .lbl { font-size:12px; line-height:16px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; opacity:.75; }
+  .h { height:44px; } .v { height:120px; } .iso { height:56px; }
+  .safe { outline:1px dashed currentColor; outline-offset:14px; }
+</style>
+</head>
+<body>
+<div class="grid">
+  <div class="panel on-crema">
+    <span class="lbl">Sobre crema · tinta negro</span>
+    <div class="row">
+      <img class="v" src="../logos/svg/kaze-firma-vertical-negro.svg" alt="Kaze, firma vertical">
+      <img class="iso" src="../logos/svg/kaze-isotipo-negro.svg" alt="Kaze, isotipo">
+    </div>
+    <img class="h safe" src="../logos/svg/kaze-firma-horizontal-negro.svg" alt="Kaze, firma horizontal" style="align-self:flex-start">
+  </div>
+  <div class="panel on-negro">
+    <span class="lbl">Sobre negro · tinta crema</span>
+    <div class="row">
+      <img class="v" src="../logos/svg/kaze-firma-vertical-crema.svg" alt="Kaze, firma vertical">
+      <img class="iso" src="../logos/svg/kaze-isotipo-crema.svg" alt="Kaze, isotipo">
+    </div>
+    <img class="h safe" src="../logos/svg/kaze-firma-horizontal-crema.svg" alt="Kaze, firma horizontal" style="align-self:flex-start">
+  </div>
+</div>
+</body>
+</html>

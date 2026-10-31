@@ -1,0 +1,10 @@
+/* Kaze — colores de marca */
+:root {
+  --crema: #f3ecdf;          /* fondo principal, logo sobre negro */
+  --negro: #151311;          /* texto, logo sobre crema */
+  --tostado: #84532e;        /* acento: precios, notas de cata (sobre crema) */
+  --tostado-claro: #d3a273;  /* acento sobre negro */
+  --crema-oscuro: #eae0cd;   /* tarjetas, bloques destacados */
+  --linea: #d6c8ae;          /* divisores */
+  --texto-secundario: #5f564c;
+}

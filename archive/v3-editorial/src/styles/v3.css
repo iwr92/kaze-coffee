@@ -1,0 +1,568 @@
+/*
+ * KAZE V3 — dirección editorial.
+ * Un solo gesto audaz: tipografía monumental compuesta como ráfagas de viento.
+ * Todo lo demás, quieto y preciso. El CSS por defecto es la versión estática;
+ * `[data-motion="on"]` (lo agrega useScene) habilita las composiciones cinéticas.
+ */
+
+:root {
+  --kz-gutter: 20px;
+  --kz-indent-scale: 0.45;
+  --kz-rule: rgb(21 19 17 / 0.16);
+}
+@media (min-width: 768px) {
+  :root {
+    --kz-gutter: 48px;
+    --kz-indent-scale: 1;
+  }
+}
+
+/* ——— Escala monumental ——— */
+.kz-mono-xl,
+.kz-mono-lg,
+.kz-display,
+.kz-display-sm {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  font-kerning: normal;
+}
+.kz-mono-xl {
+  font-size: 15vw;
+  line-height: 0.94;
+}
+.kz-mono-lg {
+  font-size: 12vw;
+  line-height: 0.96;
+}
+@media (min-width: 768px) {
+  .kz-mono-xl {
+    font-size: clamp(4rem, 8.8vw, 10rem);
+  }
+  .kz-mono-lg {
+    font-size: clamp(3.25rem, 6.8vw, 8rem);
+  }
+}
+.kz-display-sm {
+  font-size: clamp(1.75rem, 3.1vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+}
+
+/* Líneas escalonadas: cada capa tiene un solo dueño de animación. */
+.kz-wind {
+  display: block;
+  margin: 0;
+}
+.kz-line {
+  display: block;
+  width: max-content;
+  max-width: none;
+  margin-left: calc(var(--kz-indent, 0em) * var(--kz-indent-scale));
+}
+.kz-line-air {
+  display: block;
+  overflow: hidden;
+  /* Aire para descendentes y acentos dentro de la máscara. */
+  padding: 0.06em 0.04em 0.12em;
+  margin: -0.06em -0.04em -0.12em;
+}
+.kz-line-inner {
+  display: block;
+  will-change: transform;
+}
+
+/* Entrada del hero antes del primer pintado (ver layout.tsx). Si el JS no
+   llegara a ejecutarse, la animación de respaldo revela el texto. */
+@keyframes kz-reveal-failsafe {
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+.kz-intro-pending [data-moment="despertar"] .kz-line-inner {
+  transform: translateY(112%);
+  animation: kz-reveal-failsafe 0.8s 2.6s forwards;
+}
+.kz-intro-pending [data-moment="despertar"] .moment-label,
+.kz-intro-pending [data-moment="despertar"] .moment-foot {
+  opacity: 0;
+  animation: kz-reveal-failsafe 0.8s 2.6s forwards;
+}
+
+.link-ink {
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+  transition: text-underline-offset 320ms var(--ease-editorial);
+}
+.link-ink:hover {
+  text-underline-offset: 8px;
+}
+
+/* ——— Hero: bloques editoriales ——— */
+.moment-copy {
+  max-width: none;
+}
+
+/* ——— Viento (manifiesto) ——— */
+.manifesto-stage {
+  padding: 22vh var(--kz-gutter) 18vh;
+  gap: 6vh;
+}
+.manifesto-kicker {
+  position: absolute;
+  top: 14vh;
+  left: var(--kz-gutter);
+  z-index: 2;
+}
+.manifesto-image {
+  position: relative;
+  width: 78vw;
+  aspect-ratio: 4 / 3;
+  margin-left: auto;
+  margin-right: calc(var(--kz-gutter) * -1);
+  overflow: hidden;
+  z-index: 0;
+}
+.manifesto-line {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 13vw;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.manifesto-note {
+  position: relative;
+  z-index: 2;
+}
+@media (min-width: 768px) {
+  .manifesto-image {
+    position: absolute;
+    top: 16vh;
+    right: 9vw;
+    width: 34vw;
+    margin: 0;
+  }
+  .manifesto-line {
+    font-size: 9vw;
+    max-width: 14ch;
+  }
+  .manifesto-note {
+    position: absolute;
+    left: var(--kz-gutter);
+    bottom: 9vh;
+  }
+}
+/* Con movimiento: una sola línea que cruza la pantalla. */
+.manifesto[data-motion="on"] .manifesto-stage {
+  height: 100svh;
+  padding: 0;
+}
+.manifesto[data-motion="on"] .manifesto-image {
+  position: absolute;
+  top: 18vh;
+  right: -6vw;
+  width: 74vw;
+  margin: 0;
+}
+.manifesto[data-motion="on"] .manifesto-line {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  translate: 0 -50%;
+  max-width: none;
+  white-space: nowrap;
+  text-wrap: nowrap;
+  font-size: 30vw;
+  will-change: transform;
+}
+.manifesto[data-motion="on"] .manifesto-note {
+  position: absolute;
+  left: var(--kz-gutter);
+  bottom: 8vh;
+}
+@media (min-width: 768px) {
+  .manifesto[data-motion="on"] .manifesto-image {
+    top: 14vh;
+    right: 9vw;
+    width: 34vw;
+  }
+  .manifesto[data-motion="on"] .manifesto-line {
+    font-size: 19vw;
+  }
+}
+
+/* ——— Origen ——— */
+.origin {
+  padding: 16vh 0 20vh;
+}
+.origin-grid {
+  display: grid;
+  gap: 56px;
+}
+.origin-grid > *,
+.notes-head > * {
+  min-width: 0;
+}
+.origin-frame {
+  margin: 0;
+  width: calc(100% - var(--kz-gutter));
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+}
+.origin-copy {
+  padding: 0 var(--kz-gutter);
+}
+.origin-promises {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.origin-promise {
+  position: relative;
+  padding: 22px 0 26px;
+}
+.origin-rule {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: var(--kz-rule);
+  transform-origin: left;
+}
+@media (min-width: 768px) {
+  .origin-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 32px;
+    padding-right: var(--kz-gutter);
+  }
+  .origin-frame {
+    grid-column: 1 / span 7;
+    width: 100%;
+    aspect-ratio: 5 / 6;
+    max-height: 120vh;
+  }
+  .origin-copy {
+    grid-column: 9 / span 4;
+    align-self: end;
+    padding: 0 0 4vh;
+  }
+}
+
+/* ——— Molienda ——— */
+.grind {
+  padding: 14vh var(--kz-gutter) 18vh;
+}
+.grind-grid {
+  display: grid;
+  gap: 48px;
+}
+/* Sin esto, la fila de chips impone su ancho a la columna en móvil. */
+.grind-grid > * {
+  min-width: 0;
+}
+.grind-methods {
+  /* Un fieldset no se achica por defecto (min-inline-size: min-content). */
+  min-inline-size: 0;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  margin-right: calc(var(--kz-gutter) * -1);
+  padding-right: var(--kz-gutter);
+}
+.grind-method {
+  scroll-snap-align: start;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 18px;
+  border: 1px solid var(--kz-rule);
+  border-radius: 999px; /* manual: radius-pill solo para chips de filtro */
+  cursor: pointer;
+  transition:
+    background-color 320ms var(--ease-editorial),
+    color 320ms var(--ease-editorial),
+    border-color 320ms var(--ease-editorial);
+}
+.grind-method-name {
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.grind-method-grind {
+  display: none;
+}
+.grind-method[data-active] {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: var(--color-pearl);
+}
+.grind-method:has(input:focus-visible) {
+  outline: 2px solid var(--color-tostado);
+  outline-offset: 2px;
+}
+.grind-field {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: var(--color-crema);
+  overflow: hidden;
+  touch-action: pan-y;
+}
+.grain-air {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.grain {
+  position: absolute;
+  left: -16px;
+  top: -12px;
+  width: 32px;
+  height: 24px;
+  border-radius: 46% 54% 52% 48% / 58% 44% 56% 42%;
+  background: radial-gradient(circle at 34% 30%, rgb(255 236 210 / 0.16), transparent 58%), var(--grain-tone);
+  will-change: transform;
+}
+.grain-dark {
+  --grain-tone: #2b170c;
+}
+.grain-mid {
+  --grain-tone: #46281a;
+}
+.grain-light {
+  --grain-tone: #6a4327;
+}
+/* En grano: surco central visible. */
+.grain::after {
+  content: "";
+  position: absolute;
+  left: 49%;
+  top: 14%;
+  bottom: 14%;
+  width: 2px;
+  border-radius: 2px;
+  background: rgb(232 205 168 / 0.45);
+  transform: skewX(-10deg);
+  opacity: 0;
+  transition: opacity 500ms var(--ease-editorial);
+}
+.grind-field[data-method="grano"] .grain {
+  border-radius: 50%;
+}
+.grind-field[data-method="grano"] .grain::after {
+  opacity: 1;
+}
+.grind-caption {
+  margin-top: 28px;
+}
+@media (min-width: 768px) {
+  .grind-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 32px;
+    align-items: start;
+  }
+  .grind-copy {
+    grid-column: 1 / span 5;
+    position: sticky;
+    top: 14vh;
+  }
+  .grind-stage {
+    grid-column: 7 / span 6;
+  }
+  .grind-field {
+    aspect-ratio: 5 / 6;
+  }
+  .grind-methods {
+    flex-direction: column;
+    gap: 0;
+    overflow: visible;
+    margin-right: 0;
+    padding-right: 0;
+  }
+  .grind-method {
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 24px;
+    padding: 14px 0;
+    border: 0;
+    border-bottom: 1px solid var(--kz-rule);
+    border-radius: 0;
+  }
+  .grind-method[data-active] {
+    background: transparent;
+    color: var(--color-ink);
+  }
+  .grind-method-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.9rem, 3.2vw, 3.25rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    opacity: 0.26;
+    transition:
+      opacity 420ms var(--ease-editorial),
+      transform 420ms var(--ease-editorial);
+  }
+  .grind-method:hover .grind-method-name {
+    opacity: 0.6;
+  }
+  .grind-method[data-active] .grind-method-name {
+    opacity: 1;
+    transform: translateX(0.35em);
+  }
+  .grind-method-grind {
+    display: block;
+    color: var(--color-tostado);
+    opacity: 0;
+    transition: opacity 420ms var(--ease-editorial);
+  }
+  .grind-method[data-active] .grind-method-grind {
+    opacity: 1;
+  }
+}
+
+/* ——— Notas ——— */
+.notes {
+  padding: 18vh 0 16vh;
+}
+.notes-head {
+  display: grid;
+  gap: 32px;
+  padding: 0 var(--kz-gutter);
+}
+.notes-rows {
+  margin-top: 12vh;
+  display: grid;
+  gap: 1vh;
+}
+.notes-track {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 var(--kz-gutter);
+}
+.notes-list {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.notes-list + .notes-list {
+  display: none;
+}
+.notes-word {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  white-space: nowrap;
+  color: var(--color-ink-muted);
+  font-size: clamp(2.1rem, 6.5vw, 6.75rem);
+}
+.notes-word::after {
+  content: "";
+  display: inline-block;
+  width: 0.13em;
+  height: 0.13em;
+  margin: 0 0.5em;
+  border-radius: 50%;
+  background: var(--color-tostado);
+  vertical-align: middle;
+}
+.notes-row-1 .notes-word {
+  color: var(--color-ink);
+  font-size: clamp(2.8rem, 10vw, 10.5rem);
+}
+.notes[data-motion="on"] .notes-track {
+  flex-wrap: nowrap;
+  width: max-content;
+  padding: 0;
+  will-change: transform;
+}
+.notes[data-motion="on"] .notes-list {
+  flex-wrap: nowrap;
+}
+.notes[data-motion="on"] .notes-list + .notes-list {
+  display: flex;
+}
+@media (min-width: 768px) {
+  .notes-head {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 32px;
+    align-items: end;
+  }
+  .notes-heading {
+    grid-column: 1 / span 8;
+  }
+  .notes-caption {
+    grid-column: 10 / span 3;
+  }
+}
+
+/* ——— Ritual ——— */
+.ritual {
+  display: flex;
+  flex-direction: column;
+}
+.ritual-media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1200 / 1536;
+}
+.ritual-copy {
+  padding: 8vh var(--kz-gutter) 14vh;
+}
+@media (min-width: 768px) {
+  .ritual {
+    display: block;
+  }
+  .ritual-media {
+    aspect-ratio: 2752 / 1536;
+  }
+  .ritual-copy {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0 var(--kz-gutter);
+    max-width: 52vw;
+  }
+}
+
+/* ——— Pie ——— */
+.site-footer {
+  padding: 14vh var(--kz-gutter) 28px;
+  border-top: 1px solid var(--kz-rule);
+}
+.site-footer-row {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.site-footer-mark {
+  margin-top: 12vh;
+  /* Área de resguardo del manual: media altura del isotipo alrededor del logo. */
+  padding: 2vw 0;
+}
+.site-footer-sign {
+  margin-top: 20px;
+  text-align: right;
+}
+@media (min-width: 768px) {
+  .site-footer-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

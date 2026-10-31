@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "fps": 24,
+  "frameCount": 472,
+  "keyFrames": [
+    0,
+    119,
+    236,
+    353,
+    471
+  ],
+  "variants": {
+    "desktop": {
+      "width": 1280,
+      "height": 716,
+      "step": 1,
+      "count": 472,
+      "formats": {
+        "webp": "desktop/webp/f{i}.webp",
+        "avif": "desktop/avif/f{i}.avif"
+      },
+      "bytes": {
+        "webp": 16839398,
+        "avif": 11683373
+      },
+      "posters": [
+        "desktop/poster/moment-1.webp",
+        "desktop/poster/moment-2.webp",
+        "desktop/poster/moment-3.webp",
+        "desktop/poster/moment-4.webp",
+        "desktop/poster/moment-5.webp"
+      ]
+    },
+    "mobile": {
+      "width": 720,
+      "height": 402,
+      "step": 2,
+      "count": 236,
+      "formats": {
+        "webp": "mobile/webp/f{i}.webp",
+        "avif": "mobile/avif/f{i}.avif"
+      },
+      "bytes": {
+        "webp": 4261656,
+        "avif": 3005558
+      },
+      "posters": [
+        "mobile/poster/moment-1.webp",
+        "mobile/poster/moment-2.webp",
+        "mobile/poster/moment-3.webp",
+        "mobile/poster/moment-4.webp",
+        "mobile/poster/moment-5.webp"
+      ]
+    }
+  }
+}

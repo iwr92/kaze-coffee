@@ -1,0 +1,199 @@
+/*
+ * KAZE V4 — base editorial.
+ * Titulares en Shippori Mincho compuestos en líneas escalonadas, mucho aire
+ * perla y la interfaz en Instrument Sans. Tostado solo como acento.
+ */
+
+:root {
+  --kz-gutter: 20px;
+  --kz-indent-scale: 0.5;
+  --kz-rule: rgb(21 19 17 / 0.14);
+}
+@media (min-width: 768px) {
+  :root {
+    --kz-gutter: 48px;
+    --kz-indent-scale: 1;
+  }
+}
+
+/* ——— Titulares escalonados (cada capa tiene un solo dueño de animación) ——— */
+.kz-wind {
+  display: block;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.022em;
+}
+.kz-line {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  margin-left: calc(var(--kz-indent, 0em) * var(--kz-indent-scale));
+}
+.kz-line-air {
+  display: block;
+  overflow: hidden;
+  padding: 0.06em 0.04em 0.12em;
+  margin: -0.06em -0.04em -0.12em;
+}
+.kz-line-inner {
+  display: block;
+  will-change: transform;
+}
+
+/* ——— Escalas del hero: presencia sin tapar el grano ——— */
+.kz-hero-title {
+  font-size: 12.5vw;
+  line-height: 0.98;
+}
+.kz-hero-caption {
+  font-size: 9vw;
+  line-height: 1.02;
+}
+.kz-hero-close {
+  font-size: 12vw;
+  line-height: 0.98;
+}
+@media (min-width: 768px) {
+  .kz-hero-title {
+    font-size: clamp(3rem, 5.4vw, 6.25rem);
+  }
+  .kz-hero-caption {
+    font-size: clamp(2rem, 3.3vw, 3.5rem);
+  }
+  .kz-hero-close {
+    font-size: clamp(2.75rem, 5vw, 5.75rem);
+  }
+}
+.moment-copy {
+  max-width: none;
+}
+
+/* Indicador de scroll de la apertura. */
+.scroll-cue {
+  display: none;
+}
+@media (min-width: 768px) {
+  .scroll-cue {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 40px;
+  }
+}
+.scroll-cue-line {
+  position: relative;
+  width: 44px;
+  height: 1px;
+  overflow: hidden;
+  background: var(--kz-rule);
+}
+.scroll-cue-line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-ink);
+  transform-origin: left;
+  animation: kz-cue 2.4s var(--ease-editorial) infinite;
+}
+@keyframes kz-cue {
+  0% {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  50% {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  50.01% {
+    transform-origin: right;
+  }
+  100% {
+    transform: scaleX(0);
+    transform-origin: right;
+  }
+}
+
+/* Entrada del hero antes del primer pintado (ver layout.tsx). Si el JS no
+   llegara a ejecutarse, la animación de respaldo revela el texto. */
+@keyframes kz-reveal-failsafe {
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+.kz-intro-pending [data-moment="despertar"] .kz-line-inner {
+  transform: translateY(112%);
+  animation: kz-reveal-failsafe 0.8s 2.6s forwards;
+}
+.kz-intro-pending [data-moment="despertar"] .moment-label,
+.kz-intro-pending [data-moment="despertar"] .moment-foot {
+  opacity: 0;
+  animation: kz-reveal-failsafe 0.8s 2.6s forwards;
+}
+
+/* Etiqueta de estado (pendiente / tienda). */
+.sc-tag {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 10px;
+  padding: 3px 8px;
+  border: 1px solid var(--color-tostado);
+  border-radius: 2px;
+  color: var(--color-tostado);
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+/* ——— Pie ——— */
+.site-footer {
+  padding: 14vh var(--kz-gutter) 28px;
+  border-top: 1px solid var(--kz-rule);
+}
+.site-footer-store {
+  display: grid;
+  gap: 28px;
+}
+.site-footer-title {
+  margin: 0;
+  max-width: 14ch;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.25rem, 5vw, 5.25rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.site-footer-row {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 10vh;
+}
+.site-footer-mark {
+  margin-top: 8vh;
+  /* Área de resguardo del manual: media altura del isotipo alrededor del logo. */
+  padding: 2vw 0;
+}
+@media (min-width: 768px) {
+  .site-footer-store {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 32px;
+    align-items: end;
+  }
+  .site-footer-title {
+    grid-column: 1 / span 7;
+  }
+  .site-footer-store-cta {
+    grid-column: 9 / span 4;
+  }
+  .site-footer-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

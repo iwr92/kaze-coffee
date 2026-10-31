@@ -1,0 +1,79 @@
+{
+  "label": "antes",
+  "desktop": {
+    "firstFrameMs": 904,
+    "atFirstFrame": {
+      "frames": 1,
+      "bytes": 48437,
+      "sample": "/cinematic/seq/desktop/avif/f0000.avif"
+    },
+    "after8sIdle": {
+      "frames": 359,
+      "bytes": 8832298,
+      "sample": "/cinematic/seq/desktop/avif/f0000.avif"
+    },
+    "afterFullTour": {
+      "frames": 472,
+      "bytes": 11716170,
+      "sample": "/cinematic/seq/desktop/avif/f0000.avif"
+    },
+    "memoryMB": {
+      "idle": 369,
+      "peak": 792
+    },
+    "frameTimesMs": {
+      "n": 7648,
+      "p50": 8.30000000000291,
+      "p95": 8.400000000001455,
+      "over50": 1
+    },
+    "stepDiff": {
+      "median": "15.11",
+      "max": "44.84"
+    },
+    "reverseDiff": {
+      "median": "0.00",
+      "max": "15.08"
+    },
+    "blankFrame": false,
+    "errors": []
+  },
+  "mobile": {
+    "firstFrameMs": 655,
+    "atFirstFrame": {
+      "frames": 1,
+      "bytes": 25432,
+      "sample": "/cinematic/seq/mobile/avif/f0000.avif"
+    },
+    "after8sIdle": {
+      "frames": 236,
+      "bytes": 3022743,
+      "sample": "/cinematic/seq/mobile/avif/f0000.avif"
+    },
+    "afterFullTour": {
+      "frames": 236,
+      "bytes": 3022743,
+      "sample": "/cinematic/seq/mobile/avif/f0000.avif"
+    },
+    "memoryMB": {
+      "idle": 286,
+      "peak": 684
+    },
+    "frameTimesMs": {
+      "n": 7628,
+      "p50": 8.30000000000291,
+      "p95": 8.400000000001455,
+      "over50": 0
+    },
+    "stepDiff": {
+      "median": "10.06",
+      "max": "26.09"
+    },
+    "reverseDiff": {
+      "median": "1.07",
+      "max": "7.31"
+    },
+    "blankFrame": false,
+    "errors": []
+  }
+}

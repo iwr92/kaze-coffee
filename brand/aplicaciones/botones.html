@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Boton — preview</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+  html, body { margin:0; }
+  body { font-family:var(--font-sans, "Instrument Sans", system-ui, sans-serif); background:var(--surface, #f3ecdf); color:var(--ink, #151311); }
+  .row { display:flex; align-items:center; gap:var(--space-6, 24px); padding:var(--space-8, 32px); flex-wrap:wrap; }
+  .btn { font:inherit; font-size:12px; line-height:16px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; padding:var(--space-3, 12px) var(--space-6, 24px); border-radius:var(--radius-sm, 2px); cursor:pointer; border:1px solid var(--ink, #151311); }
+  .primary { background:var(--ink, #151311); color:var(--on-ink, #f3ecdf); }
+  .secondary { background:transparent; color:var(--ink, #151311); }
+  .link { background:none; border:0; padding:0; color:var(--accent, #84532e); text-decoration:underline; text-underline-offset:4px; }
+  .btn:focus-visible, .focus { outline:2px solid var(--focus, #84532e); outline-offset:2px; }
+  .btn:disabled { opacity:.4; cursor:not-allowed; }
+</style>
+</head>
+<body>
+<div class="row">
+  <button class="btn primary">Agregar al carrito</button>
+  <button class="btn secondary">Ver orígenes</button>
+  <button class="btn link">Cómo prepararlo</button>
+  <button class="btn primary focus">Con foco</button>
+  <button class="btn primary" disabled>Sin stock</button>
+</div>
+</body>
+</html>
