@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Instrument_Sans, Shippori_Mincho_B1 } from "next/font/google";
+import { SITE_DESCRIPTION, SITE_INDEXABLE, SITE_TITLE, SITE_URL } from "@/config/site";
 import "./globals.css";
 
 const shippori = Shippori_Mincho_B1({
@@ -21,9 +22,27 @@ const instrument = Instrument_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Kaze — Café de especialidad, a tu ritmo",
-  description: "Café de especialidad de distintos tostadores, seleccionado para disfrutar en casa, a tu ritmo.",
+  metadataBase: new URL(SITE_URL),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  alternates: { canonical: "/" },
+  robots: SITE_INDEXABLE ? { index: true, follow: true } : { index: false, follow: false },
   icons: { icon: "/brand/logos/svg/kaze-isotipo-negro.svg" },
+  openGraph: {
+    type: "website",
+    locale: "es_AR",
+    siteName: "KAZE",
+    url: "/",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: [{ url: "/og/kaze-og.jpg", width: 1200, height: 630, alt: "KAZE, café de especialidad, a tu ritmo." }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: ["/og/kaze-og.jpg"],
+  },
 };
 
 export const viewport: Viewport = {

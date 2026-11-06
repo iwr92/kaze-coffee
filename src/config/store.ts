@@ -1,42 +1,30 @@
 /**
- * Configuración central de la tienda (Tiendanube).
+ * Configuración central de la tienda (WordPress + WooCommerce).
  *
- * La URL no está en el código: se define en el entorno.
- *   NEXT_PUBLIC_TIENDANUBE_STORE_URL=https://tu-tienda.mitiendanube.com
- *   NEXT_PUBLIC_TIENDANUBE_COLLECTION_PATH=/productos/   (opcional)
- *
- * Mientras no esté definida, los CTAs llevan a la sección #tienda, que
- * explica que la tienda abre pronto. Nunca se inventa una URL.
+ * El checkout vive solo en WooCommerce. Las páginas de STORE_PAGES figuran en
+ * el sitemap de la tienda (verificado el 2026-11-06).
  */
 
-function normalizeUrl(raw: string | undefined): string | null {
-  const value = raw?.trim();
-  if (!value) return null;
-  try {
-    const url = new URL(value);
-    return url.protocol === "https:" ? url.toString().replace(/\/$/, "") : null;
-  } catch {
-    return null;
-  }
-}
+export const STORE_URL = "https://tienda.kazecoffee.shop";
 
-export const storeConfig = {
-  url: normalizeUrl(process.env.NEXT_PUBLIC_TIENDANUBE_STORE_URL),
-  collectionPath: process.env.NEXT_PUBLIC_TIENDANUBE_COLLECTION_PATH?.trim() || "",
-  /** Ancla de respaldo cuando la tienda todavía no está conectada. */
-  fallbackAnchor: "#tienda",
+export const STORE_PAGES = {
+  shop: `${STORE_URL}/tienda/`,
+  shipping: `${STORE_URL}/politica-de-envios/`,
+  terms: `${STORE_URL}/terminos-y-condiciones/`,
+  returns: `${STORE_URL}/reembolso_devoluciones/`,
+  withdrawal: `${STORE_URL}/boton-de-arrepentimiento/`,
+  privacy: `${STORE_URL}/privacy-policy/`,
+  contact: `${STORE_URL}/contacto/`,
 } as const;
 
-export type StoreDestination = "home" | "collection";
+/**
+ * Interruptor de ventas. Cualquier valor distinto de "true" las deja apagadas.
+ * Se activa cuando el stock esté recibido y WooCommerce habilitado.
+ *
+ *   false: se muestran productos y precios, sin afirmar disponibilidad.
+ *   true:  CTAs a WooCommerce y disponibilidad leída de la tienda.
+ */
+export const SALES_ENABLED = process.env.NEXT_PUBLIC_KAZE_SALES_ENABLED === "true";
 
-/** Devuelve la URL de destino, o null si la tienda no está configurada. */
-export function storeHref(destination: StoreDestination = "home"): string | null {
-  if (!storeConfig.url) return null;
-  if (destination === "collection" && storeConfig.collectionPath) {
-    const path = storeConfig.collectionPath.startsWith("/")
-      ? storeConfig.collectionPath
-      : `/${storeConfig.collectionPath}`;
-    return `${storeConfig.url}${path}`;
-  }
-  return storeConfig.url;
-}
+/** Ancla del estado de apertura mientras las ventas están apagadas. */
+export const STORE_STATUS_ANCHOR = "#tienda";

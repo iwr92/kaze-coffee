@@ -2,29 +2,19 @@
 
 import { useRef } from "react";
 import { COLLECTION_ANCHOR } from "@/cinematic/moments";
-import { storeConfig } from "@/config/store";
+import { SALES_ENABLED, STORE_PAGES } from "@/config/store";
 import { gsap } from "../motion/ease";
 import { KineticTitle } from "../motion/KineticTitle";
 import { useReveals } from "../motion/useReveals";
 import { Wind } from "../motion/Wind";
-import { StoreLink } from "../StoreLink";
-
-/** Promesa del manual de marca: sin certificaciones ni atributos inventados. */
-const VALUES = [
-  { title: "Origen trazable", text: "Cada café indica de dónde viene y quién lo tostó." },
-  { title: "Pequeños lotes", text: "Tostado en lotes chicos, para cuidar cada perfil." },
-  { title: "Enviado fresco", text: "Llega a tu casa con el aroma de un tueste reciente." },
-];
 
 /**
- * The Final Statement (#kaze, #tienda) — el cierre de marca y la compra.
- * Transición: una ola perla con borde de viento se retira con el scroll y
- * descubre el negro; las ráfagas crema se dibujan y el logotipo oficial se
- * revela de izquierda a derecha.
+ * El cierre (#kaze, #tienda): marca y compra.
+ * Una ola crema con borde de viento se retira con el scroll y descubre el
+ * negro; las ráfagas se dibujan y el logotipo oficial se revela.
  */
 export function FinalConversion() {
   const ref = useRef<HTMLElement>(null);
-  const ready = Boolean(storeConfig.url);
 
   useReveals(ref, (root) => {
     const tl = gsap.timeline({
@@ -49,9 +39,6 @@ export function FinalConversion() {
       <Wind variant="closing" tone="crema" className="final-wind" />
 
       <div className="final-inner">
-        <p className="final-eyebrow">
-          Kaze <span lang="ja">風</span> significa viento
-        </p>
         <div className="final-mark">
           {/* Logotipo original del manual (versión crema sobre negro), sin deformar. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -69,32 +56,23 @@ export function FinalConversion() {
             ]}
           />
           <div className="final-actions" data-reveal="fade">
-            {ready ? (
-              <StoreLink destination="collection" className="btn btn-light btn-lg">
-                Ir a la tienda
-              </StoreLink>
+            {SALES_ENABLED ? (
+              <a href={STORE_PAGES.shop} className="btn btn-light btn-lg" rel="noopener">
+                Explorar todos los cafés
+              </a>
             ) : (
               <>
                 <a href={COLLECTION_ANCHOR} className="btn btn-light btn-lg">
-                  Explorar cafés
+                  Explorar todos los cafés
                 </a>
                 <p className="final-status">
                   <span className="sc-note-dot" aria-hidden />
-                  La tienda online abre pronto.
+                  La tienda abre pronto.
                 </p>
               </>
             )}
           </div>
         </div>
-
-        <ul className="final-values">
-          {VALUES.map((v) => (
-            <li key={v.title} className="final-value" data-reveal="fade">
-              <h3 className="final-value-title">{v.title}</h3>
-              <p className="final-value-text">{v.text}</p>
-            </li>
-          ))}
-        </ul>
       </div>
     </section>
   );

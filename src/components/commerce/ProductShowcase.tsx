@@ -1,55 +1,36 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  formatPrice,
-  formatWeight,
-  GRIND_LABELS,
-  showcaseItems,
-  type Product,
-  type ShowcaseItem,
-} from "@/commerce/products";
-import { storeConfig, storeHref } from "@/config/store";
+import Image from "next/image";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { availabilityText, productCta } from "@/commerce/cta";
+import { formatPrice, formatWeight, GRIND_LABELS, type Product } from "@/commerce/products";
+import { SALES_ENABLED } from "@/config/store";
 import { gsap } from "../motion/ease";
 import { KineticTitle } from "../motion/KineticTitle";
 import { useReveals } from "../motion/useReveals";
 import { Wind } from "../motion/Wind";
 
-const ITEMS = showcaseItems();
-const PENDING = ITEMS.every((item) => item.kind === "pending");
-
-/** Tonos neutros de los espacios de diseño, para que el cambio se perciba. */
-const PENDING_TONES = ["#efe6d6", "#e8e5df", "#e9dfcd"];
-
-function itemName(item: ShowcaseItem): string {
-  return item.kind === "product" ? item.product.name : "Próximamente";
-}
-
-/** Destino real: producto en Tiendanube › tienda › #tienda. Nunca inventado. */
-function buyHref(item: ShowcaseItem): string {
-  if (item.kind === "product" && item.product.url) return item.product.url;
-  return storeHref("collection") ?? storeConfig.fallbackAnchor;
-}
-
 const pad = (n: number) => String(n).padStart(2, "0");
 
 /**
- * Descubrí tu próximo café — el centro comercial de la página.
+ * Descubrí tu próximo café: el centro comercial de la página.
  *
- * Un producto protagonista a la vez sobre un campo crema: imagen dominante y
- * ficha con jerarquía clara. Se navega con flechas, la barra de productos,
- * el teclado o deslizando. Al cambiar, la imagen entra con una máscara y la
- * ficha se reemplaza desde sus máscaras.
+ * Un café protagonista a la vez sobre un campo crema. Se navega con flechas,
+ * la barra de productos, el teclado o deslizando; el precio y la acción de
+ * compra siempre quedan a la vista.
  */
-export function ProductShowcase() {
+export function ProductShowcase({ products }: { products: Product[] }) {
   const [index, setIndex] = useState(0);
+  const [factsOpen, setFactsOpen] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const infoRef = useRef<HTMLDivElement>(null);
   const busyRef = useRef(false);
   const motionRef = useRef(true);
   const lastDir = useRef<1 | -1>(1);
-  const count = ITEMS.length;
-  const item = ITEMS[index];
+  const factsId = useId();
+  const count = products.length;
+  const product = products[index];
+  const cta = productCta(product);
 
   // Entrada: el campo crema se abre como un telón con el scroll y el
   // numeral monumental se desliza detrás del producto.
@@ -58,8 +39,14 @@ export function ProductShowcase() {
     if (!field) return;
     gsap.fromTo(
       field,
-      { clipPath: "inset(18% 7% 0% 7%)" },
-      { clipPath: "inset(0% 0% 0% 0%)", ease: "none", scrollTrigger: { trigger: field, start: "top 95%", end: "top 30%", scrub: 0.6 } },
+      { clipPath: "inset(10% 7% 0% 7%)" },
+      {
+        clipPath: "inset(0% 0% 0% 0%)",
+        ease: "none",
+        // Sin recorte residual, para que la barra fija móvil no quede cortada.
+        clearProps: "clipPath",
+        scrollTrigger: { trigger: field, start: "top 95%", end: "top 45%", scrub: 0.6 },
+      },
     );
     gsap.fromTo(
       ".sc-numeral",
@@ -161,16 +148,7 @@ export function ProductShowcase() {
           ]}
         />
         <div className="sc-intro" data-reveal="fade">
-          <p className="t-body-lg text-ink-muted">
-            Encontrá el café que va con tu forma de disfrutarlo. Cada uno llega con la marca y el empaque de su
-            tostador.
-          </p>
-          {PENDING && (
-            <p className="sc-note">
-              <span className="sc-note-dot" aria-hidden />
-              Estamos preparando la primera selección.
-            </p>
-          )}
+          <p className="t-body-lg text-ink-muted">Tres formas de encontrar tu momento perfecto.</p>
         </div>
       </header>
 
@@ -185,115 +163,194 @@ export function ProductShowcase() {
           className="sc-stage"
           role="group"
           aria-roledescription="carrusel"
-          aria-label="Cafés destacados"
+          aria-label="Cafés de KAZE"
           tabIndex={0}
           onKeyDown={onKeyDown}
         >
-          <div className="sc-media" data-reveal="mask" onPointerDown={onPointerDown} onPointerUp={onPointerUp}>
-            <div className="sc-layers">
-              {ITEMS.map((it, i) => (
-                <div
-                  key={it.kind === "product" ? it.product.id : `pending-${it.slot}`}
-                  className="sc-layer"
-                  aria-hidden={i !== index}
-                  // Estilo inicial constante: después lo controla GSAP en `go`.
-                  style={{ visibility: i === 0 ? "visible" : "hidden", zIndex: i === 0 ? 1 : 0 }}
-                >
-                  <div className="sc-media-inner">
-                    {it.kind === "product" ? <ProductPhoto product={it.product} priority={i === 0} /> : <PendingPhoto slot={it.slot} />}
+          <figure className="sc-figure">
+            <div className="sc-media" data-reveal="mask" onPointerDown={onPointerDown} onPointerUp={onPointerUp}>
+              <div className="sc-layers">
+                {products.map((p, i) => (
+                  <div
+                    key={p.id}
+                    className="sc-layer"
+                    aria-hidden={i !== index}
+                    // Estilo inicial constante: después lo controla GSAP en `go`.
+                    style={{ visibility: i === 0 ? "visible" : "hidden", zIndex: i === 0 ? 1 : 0 }}
+                  >
+                    <div className="sc-media-inner">
+                      <Image
+                        src={p.images[0].src}
+                        alt={p.images[0].alt}
+                        fill
+                        sizes="(max-width: 1023px) 100vw, 42vw"
+                        priority={i === 0}
+                        className="sc-photo"
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+            <figcaption className="sc-caption">Imagen ilustrativa del packaging de {product.supplier}.</figcaption>
+          </figure>
 
           <div className="sc-info" ref={infoRef}>
             <div className="sc-index" aria-hidden>
               <span className="sc-index-current">{pad(index + 1)}</span>
               <span className="sc-index-total">/ {pad(count)}</span>
             </div>
-            <ProductInfo item={item} />
+            <ProductInfo product={product} />
+
             <div className="sc-buy">
-              <a href={buyHref(item)} className="btn btn-primary btn-lg sc-buy-cta" rel={item.kind === "product" && item.product.url ? "noopener" : undefined}>
-                {item.kind === "product" ? "Comprar en la tienda" : "Ver la tienda"}
-              </a>
-              {count > 1 && (
-                <div className="sc-arrows">
-                  <button type="button" className="sc-arrow" onClick={() => go(index - 1, -1)} aria-label="Café anterior">
-                    <Arrow dir={-1} />
-                  </button>
-                  <button type="button" className="sc-arrow" onClick={() => go(index + 1, 1)} aria-label="Café siguiente">
-                    <Arrow dir={1} />
-                  </button>
-                </div>
+              {cta.href ? (
+                <a href={cta.href} className="btn btn-primary btn-lg sc-buy-cta" rel="noopener">
+                  {cta.label}
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  className="btn btn-primary btn-lg sc-buy-cta"
+                  aria-expanded={factsOpen}
+                  aria-controls={factsId}
+                  onClick={() => setFactsOpen((open) => !open)}
+                >
+                  {factsOpen ? "Ocultar ficha" : cta.label}
+                </button>
               )}
+              <div className="sc-arrows">
+                <button type="button" className="sc-arrow" onClick={() => go(index - 1, -1)} aria-label="Café anterior">
+                  <Arrow dir={-1} />
+                </button>
+                <button type="button" className="sc-arrow" onClick={() => go(index + 1, 1)} aria-label="Café siguiente">
+                  <Arrow dir={1} />
+                </button>
+              </div>
+            </div>
+
+            {SALES_ENABLED && (
+              <button
+                type="button"
+                className="link-line sc-facts-toggle"
+                aria-expanded={factsOpen}
+                aria-controls={factsId}
+                onClick={() => setFactsOpen((open) => !open)}
+              >
+                {factsOpen ? "Ocultar ficha" : "Ver ficha"}
+              </button>
+            )}
+            <div id={factsId} className="sc-facts" data-open={factsOpen || undefined} inert={!factsOpen}>
+              <div className="sc-facts-inner">
+                <dl className="sc-facts-list">
+                  {product.facts.map((fact) => (
+                    <div key={fact.label} className="sc-fact">
+                      <dt>{fact.label}</dt>
+                      <dd>{fact.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <p className="sc-facts-source">Según la ficha de {product.supplier}.</p>
+              </div>
             </div>
           </div>
         </div>
 
-        {count > 1 && (
-          <nav className="sc-rail" aria-label="Todos los cafés destacados">
-            <ol>
-              {ITEMS.map((it, i) => (
-                <li key={i}>
-                  <button
-                    type="button"
-                    className="sc-rail-item"
-                    aria-current={i === index ? "true" : undefined}
-                    aria-label={`Ver café ${i + 1}: ${itemName(it)}`}
-                    onClick={() => go(i, i > index ? 1 : -1)}
-                  >
-                    <span className="sc-rail-thumb" aria-hidden>
-                      {it.kind === "product" ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={it.product.image.src} alt="" width={64} height={80} loading="lazy" />
-                      ) : (
-                        <span style={{ background: PENDING_TONES[it.slot % PENDING_TONES.length] }} />
-                      )}
-                    </span>
-                    <span className="sc-rail-text">
-                      <span className="sc-rail-index">{pad(i + 1)}</span>
-                      <span className="sc-rail-name">{itemName(it)}</span>
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ol>
-          </nav>
-        )}
+        <nav className="sc-rail" aria-label="Todos los cafés">
+          <ol>
+            {products.map((p, i) => (
+              <li key={p.id}>
+                <button
+                  type="button"
+                  className="sc-rail-item"
+                  aria-current={i === index ? "true" : undefined}
+                  aria-label={`Ver ${p.name}`}
+                  onClick={() => go(i, i > index ? 1 : -1)}
+                >
+                  <span className="sc-rail-thumb" aria-hidden>
+                    <Image src={p.images[0].src} alt="" width={96} height={120} sizes="48px" />
+                  </span>
+                  <span className="sc-rail-text">
+                    <span className="sc-rail-index">{pad(i + 1)}</span>
+                    <span className="sc-rail-name">{p.name}</span>
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ol>
+        </nav>
+
+        {/* Móvil: precio y acción siempre a mano mientras se explora el catálogo. */}
+        <div className="sc-sticky">
+          <div className="sc-sticky-text">
+            <span className="sc-sticky-name">{product.name}</span>
+            <span className="sc-sticky-price">{formatPrice(product.price)}</span>
+          </div>
+          {cta.href ? (
+            <a href={cta.href} className="btn btn-primary sc-sticky-cta" rel="noopener">
+              {cta.label}
+            </a>
+          ) : (
+            <button
+              type="button"
+              className="btn btn-primary sc-sticky-cta"
+              aria-expanded={factsOpen}
+              aria-controls={factsId}
+              onClick={() => {
+                setFactsOpen(true);
+                infoRef.current?.scrollIntoView({ block: "start" });
+              }}
+            >
+              {cta.label}
+            </button>
+          )}
+        </div>
       </div>
 
       <p className="sr-only" aria-live="polite">
-        {`Café ${index + 1} de ${count}: ${itemName(item)}`}
+        {`Café ${index + 1} de ${count}: ${product.name}`}
       </p>
     </section>
   );
 }
 
-function ProductInfo({ item }: { item: ShowcaseItem }) {
-  const p = item.kind === "product" ? item.product : null;
-  const roaster = p ? p.roaster : "Tostador a confirmar";
-  const name = p ? p.name : "Próximamente";
-  const profile = p ? p.profile : "Origen, proceso y notas de cata, tal como los publica cada tostador.";
+function ProductInfo({ product }: { product: Product }) {
+  const grinds = product.grindOptions.map((grind) => GRIND_LABELS[grind]).join(", ");
   return (
-    <div className={`sc-fields ${p ? "" : "is-pending"}`}>
+    <div className="sc-fields">
       <div className="sc-reveal">
-        <p className="sc-roaster">{roaster}</p>
+        <p className="sc-roaster">
+          {product.supplier} · {product.origin}
+        </p>
       </div>
       <div className="sc-reveal">
-        <h3 className="sc-name">{name}</h3>
+        <h3 className="sc-name">{product.name}</h3>
       </div>
       <div className="sc-reveal">
-        <p className="sc-profile">{profile}</p>
+        <p className="sc-profile">{product.description}</p>
+      </div>
+      <div className="sc-reveal">
+        <p className="sc-notes">
+          <span className="sc-notes-label">Notas</span> {product.tastingNotes.join(" · ")}
+        </p>
       </div>
       <dl className="sc-specs">
-        <Spec term="Peso" value={p ? formatWeight(p.weightGrams) : "—"} />
-        <Spec term="Formato" value={p ? p.grinds.map((g) => GRIND_LABELS[g]).join(", ") : "—"} />
+        <Spec term="Peso" value={formatWeight(product.weightGrams)} />
+        <Spec
+          term={SALES_ENABLED ? "Moliendas con stock" : "Moliendas"}
+          value={grinds || "Se confirman en la tienda"}
+        />
+        {product.recommendedMethods.length > 0 && <Spec term="Recomendado para" value={product.recommendedMethods.join(", ")} />}
       </dl>
       <div className="sc-price-row">
-        <span className="sc-price-label">Precio</span>
+        <div>
+          <span className="sc-price-label">Precio</span>
+          <p className="sc-status">
+            <span className="sc-note-dot" aria-hidden />
+            {availabilityText(product)}
+          </p>
+        </div>
         <span className="sc-reveal sc-price">
-          <span>{p ? formatPrice(p.priceARS) : "—"}</span>
+          <span>{formatPrice(product.price)}</span>
         </span>
       </div>
     </div>
@@ -307,37 +364,6 @@ function Spec({ term, value }: { term: string; value: string }) {
       <dd className="sc-reveal">
         <span>{value}</span>
       </dd>
-    </div>
-  );
-}
-
-function ProductPhoto({ product, priority }: { product: Product; priority: boolean }) {
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={product.image.src}
-      alt={product.image.alt}
-      width={product.image.width}
-      height={product.image.height}
-      loading={priority ? "eager" : "lazy"}
-      decoding="async"
-      className="h-full w-full object-cover"
-    />
-  );
-}
-
-function PendingPhoto({ slot }: { slot: number }) {
-  return (
-    <div className="sc-pending-photo" style={{ backgroundColor: PENDING_TONES[slot % PENDING_TONES.length] }}>
-      {/* Contorno neutro de una bolsa genérica: marca el lugar y la proporción
-          de la foto real del proveedor, sin marca ni etiqueta inventada. */}
-      <svg className="sc-pending-bag" viewBox="0 0 200 280" aria-hidden>
-        <path d="M44 34 L156 34 L170 262 Q170 270 162 270 L38 270 Q30 270 30 262 Z" />
-        <path d="M44 34 L52 14 L148 14 L156 34" />
-        <path d="M58 62 L142 62" />
-        <circle cx="100" cy="92" r="7" />
-      </svg>
-      <span className="sc-pending-caption">Foto del producto, tal como la publica su tostador</span>
     </div>
   );
 }

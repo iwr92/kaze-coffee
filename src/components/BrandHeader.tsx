@@ -6,9 +6,10 @@ import { StoreLink } from "./StoreLink";
 const NAV = [
   { href: "#cafes", label: "Cafés" },
   { href: "#a-tu-manera", label: "A tu manera" },
+  { href: "#guia", label: "Guía" },
   { href: "#ritual", label: "Ritual" },
-  { href: "#descubri", label: "Descubrí" },
-  { href: "#kaze", label: "KAZE" },
+  { href: "#diferencia", label: "KAZE" },
+  { href: "#preguntas", label: "Preguntas" },
 ] as const;
 
 /**

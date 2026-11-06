@@ -1,24 +1,53 @@
-import { PRODUCTS, type GrindId } from "@/commerce/products";
+import type { GrindId } from "@/commerce/products";
+
+export interface GrindGuide {
+  id: GrindId;
+  /** Textura según la tabla de la guía KAZE Home Barista. */
+  texture: string;
+  similarTo: string;
+  use: string;
+  /** Tamaño de partícula (0: grano entero) y cantidad en la ilustración. */
+  particle: { radius: number; count: number };
+}
 
 /**
- * Opciones de molienda confirmadas y su fuente. Solo se ofrece lo que está
- * confirmado; el resto se muestra como pendiente.
- *
- * - "grano": brand/MANUAL-DE-MARCA.md, línea 1: "tienda online de café de
- *   especialidad en grano y prensas francesas".
- * - Molido: sin confirmación todavía. Se habilita en cuanto un producto real
- *   del catálogo lo declare en `grinds`, o agregándolo acá con su fuente.
+ * Opciones de molienda del catálogo. Texturas: guía KAZE Home Barista, p. 4.
+ * Usos: ficha de WooCommerce. No indican disponibilidad de una bolsa concreta.
  */
-const CONFIRMED_BY_BRAND: GrindId[] = ["grano"];
-
-export interface GrindAvailability {
-  confirmed: GrindId[];
-  groundConfirmed: boolean;
-}
-
-export function grindAvailability(): GrindAvailability {
-  const confirmed = new Set<GrindId>(CONFIRMED_BY_BRAND);
-  for (const p of PRODUCTS) for (const g of p.grinds) confirmed.add(g);
-  const list = [...confirmed];
-  return { confirmed: list, groundConfirmed: list.some((g) => g !== "grano") };
-}
+export const GRIND_GUIDE: GrindGuide[] = [
+  {
+    id: "grano",
+    texture: "Entero",
+    similarTo: "Sin moler",
+    use: "Para moler en casa, justo antes de preparar.",
+    particle: { radius: 0, count: 0 },
+  },
+  {
+    id: "espresso",
+    texture: "Fina",
+    similarTo: "Como sal muy fina",
+    use: "Para máquinas de espresso.",
+    particle: { radius: 0.24, count: 520 },
+  },
+  {
+    id: "filtro",
+    texture: "Media",
+    similarTo: "Como arena o azúcar",
+    use: "Para V60, Chemex o cafeteras de goteo.",
+    particle: { radius: 0.5, count: 340 },
+  },
+  {
+    id: "prensa",
+    texture: "Gruesa",
+    similarTo: "Como sal gruesa",
+    use: "Para prensa francesa e infusiones largas.",
+    particle: { radius: 0.85, count: 200 },
+  },
+  {
+    id: "moka",
+    texture: "Media-fina",
+    similarTo: "Como sal fina",
+    use: "Para cafetera italiana.",
+    particle: { radius: 0.34, count: 440 },
+  },
+];

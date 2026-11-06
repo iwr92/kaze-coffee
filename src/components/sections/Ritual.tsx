@@ -7,17 +7,16 @@ import { gsap, ScrollTrigger } from "../motion/ease";
 import { KineticTitle } from "../motion/KineticTitle";
 import { useReveals } from "../motion/useReveals";
 
-/** Pasos de preparación (orientación general, en orden real). */
-const STEPS = [
-  { title: "Molé justo antes", text: "Si lo elegís en grano, molelo en el momento: ahí está el aroma." },
-  { title: "Agua caliente, sin hervir", text: "Esperá unos segundos después del hervor para no quemar el café." },
-  { title: "Esperá el aroma", text: "El viento trae el aroma antes que la taza." },
+const MOMENTS = [
+  { title: "Elegí", text: "El café que tenés ganas de probar." },
+  { title: "Prepará", text: "Con tu método, a tu manera." },
+  { title: "Disfrutá", text: "Sin apuro. El momento también es tuyo." },
 ];
 
 /**
- * The Ritual — deseo de preparar café en casa.
- * La fotografía crece desde una ventana hasta casi todo el ancho mientras
- * scrolleás (sin fijar la página) y un vapor SVG sube sobre la taza.
+ * The Ritual: el placer de preparar café en casa.
+ * La fotografía crece desde una ventana mientras scrolleás (sin fijar la
+ * página), un detalle de grano flota en otra capa y el vapor sube sobre la taza.
  */
 export function Ritual() {
   const ref = useRef<HTMLElement>(null);
@@ -28,6 +27,11 @@ export function Ritual() {
       media,
       { clipPath: "inset(14% 22% 14% 30% round 2px)" },
       { clipPath: "inset(0% 0% 0% 0% round 0px)", ease: "none", scrollTrigger: { trigger: media, start: "top 90%", end: "center 55%", scrub: 0.6 } },
+    );
+    gsap.fromTo(
+      ".ritual-inset",
+      { yPercent: 26, clipPath: "inset(100% 0% 0% 0%)" },
+      { yPercent: -14, clipPath: "inset(0% 0% 0% 0%)", ease: "none", scrollTrigger: { trigger: media, start: "top 70%", end: "bottom 30%", scrub: 0.8 } },
     );
     // Vapor: cada trazo sube y se desvanece en bucle, solo mientras se ve.
     const steam = gsap.utils.toArray<SVGPathElement>(".ritual-steam path", root);
@@ -75,6 +79,10 @@ export function Ritual() {
           </svg>
         </figure>
 
+        <div className="ritual-inset" aria-hidden>
+          <EditorialImage id="ruptura-macro" alt="" sizes="(max-width: 1023px) 40vw, 18vw" className="h-full w-full object-cover" />
+        </div>
+
         <div className="ritual-copy">
           <KineticTitle
             id="ritual-title"
@@ -86,8 +94,7 @@ export function Ritual() {
             ]}
           />
           <p className="ritual-lead" data-reveal="fade">
-            Elegí un café de especialidad, preparalo como te gusta y tomate el momento. El ritual empieza antes del
-            primer sorbo.
+            Prepararte un buen café es un pequeño ritual. El aroma llega primero, y el resto del día puede esperar.
           </p>
           <a href={COLLECTION_ANCHOR} className="btn btn-primary btn-lg" data-reveal="fade">
             Explorar cafés
@@ -95,8 +102,8 @@ export function Ritual() {
         </div>
       </div>
 
-      <ol className="ritual-steps" aria-label="Cómo prepararlo">
-        {STEPS.map((s, i) => (
+      <ol className="ritual-steps" aria-label="El ritual">
+        {MOMENTS.map((s, i) => (
           <li key={s.title} className="ritual-step" data-reveal="fade">
             <span className="ritual-step-n" aria-hidden>
               {String(i + 1).padStart(2, "0")}

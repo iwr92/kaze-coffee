@@ -2,125 +2,90 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { COLLECTION_ANCHOR } from "@/cinematic/moments";
-import { GRIND_LABELS } from "@/commerce/products";
-import { grindAvailability } from "@/config/grind";
-import { EditorialImage, type EditorialImageId } from "../editorial/EditorialImage";
+import { GRIND_LABELS, type GrindId } from "@/commerce/products";
+import { GRIND_GUIDE } from "@/config/grind";
 import { gsap } from "../motion/ease";
 import { KineticTitle } from "../motion/KineticTitle";
 import { useReveals } from "../motion/useReveals";
 
-interface Option {
-  id: "grano" | "molido";
-  name: string;
-  image: EditorialImageId;
-  summary: string;
-  available: boolean;
-  detail: string;
-}
+const round = (value: number) => Math.round(value * 100) / 100;
 
 /** Partículas deterministas (iguales en servidor y cliente). */
-function particles(seed: number, count: number) {
+function scatter(seed: number, count: number) {
   let s = seed;
   const rand = () => {
     s = (s * 16807) % 2147483647;
     return (s - 1) / 2147483646;
   };
-  return Array.from({ length: count }, () => ({
-    x: rand() * 100,
-    y: rand() * 100,
-    r: rand() * 360,
-    s: 0.6 + rand() * 0.9,
-    depth: 0.4 + rand() * 0.6,
-  }));
+  return Array.from({ length: count }, () => ({ x: round(rand() * 100), y: round(rand() * 75), rotation: round(rand() * 360) }));
 }
-const BEANS = particles(20261031, 9);
-const GROUNDS = particles(31102026, 46);
+
+const GROUNDS = scatter(20261106, 520);
+const BEANS = scatter(11062026, 15);
+
+/** Radio de cada partícula para una molienda: 0 si no se ve en esa textura. */
+function particleRadius(id: GrindId, i: number) {
+  const { radius, count } = GRIND_GUIDE.find((g) => g.id === id)!.particle;
+  return i < count ? radius * (0.8 + ((i * 37) % 10) * 0.04) : 0;
+}
 
 /**
- * A tu manera — comparar en grano y molido, con disponibilidad real.
- * "En grano" está confirmado por el manual de marca. "Molido" figura como
- * pendiente hasta que un producto real del catálogo lo declare.
- *
- * Cada panel es una pequeña escena por capas: la fotografía (capa lenta) y
- * partículas SVG (capa rápida) que se desplazan a distinta profundidad con
- * el scroll y el puntero. El panel activo se expande y revela su contenido.
+ * A tu manera: qué significa cada molienda, sin tutoriales.
+ * La textura se muestra: las mismas partículas cambian de tamaño, llevadas por
+ * una ráfaga, del grano entero a la molienda elegida.
  */
 export function GrindChoice() {
   const ref = useRef<HTMLElement>(null);
   const uid = useId();
-  const { confirmed, groundConfirmed } = grindAvailability();
-  const ground = confirmed.filter((g) => g !== "grano");
-
-  const options: Option[] = [
-    {
-      id: "grano",
-      name: "En grano",
-      image: "granos-macro",
-      summary: "Entero, para molerlo justo antes de preparar.",
-      available: true,
-      detail: "Molerlo en el momento conserva mejor el aroma. Ideal si tenés molinillo en casa.",
-    },
-    {
-      id: "molido",
-      name: "Molido",
-      image: "corriente-vertical",
-      summary: "Listo para tu método de preparación.",
-      available: groundConfirmed,
-      detail: groundConfirmed
-        ? ground.map((g) => GRIND_LABELS[g]).join(", ")
-        : "Las moliendas por método se van a indicar en cada café cuando estén confirmadas.",
-    },
-  ];
-  const [active, setActive] = useState<Option["id"]>("grano");
+  const [active, setActive] = useState<GrindId>("grano");
+  const current = GRIND_GUIDE.find((g) => g.id === active)!;
+  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
 
   useReveals(ref, (root) => {
-    // Parallax por capas con el scroll: la foto se mueve lento, las partículas rápido.
-    root.querySelectorAll<HTMLElement>(".gc-panel").forEach((panel) => {
-      const st = { trigger: panel, start: "top bottom", end: "bottom top", scrub: true };
-      gsap.fromTo(panel.querySelector(".gc-media-inner"), { yPercent: -4 }, { yPercent: 4, ease: "none", scrollTrigger: st });
-      gsap.fromTo(panel.querySelector(".gc-layer"), { yPercent: 10 }, { yPercent: -10, ease: "none", scrollTrigger: st });
-    });
-    // Y con el puntero (solo mouse): cada partícula según su profundidad.
-    if (!window.matchMedia("(pointer: fine)").matches) return;
-    const movers = Array.from(root.querySelectorAll<SVGGElement>(".gc-particle")).map((el) => ({
-      depth: Number(el.dataset.depth) || 0.5,
-      x: gsap.quickTo(el, "x", { duration: 1.1, ease: "kz" }),
-      y: gsap.quickTo(el, "y", { duration: 1.1, ease: "kz" }),
-    }));
-    const panels = root.querySelector<HTMLElement>(".gc-panels")!;
-    const onMove = (e: PointerEvent) => {
-      const r = panels.getBoundingClientRect();
-      const nx = ((e.clientX - r.left) / r.width) * 2 - 1;
-      const ny = ((e.clientY - r.top) / r.height) * 2 - 1;
-      movers.forEach((m) => {
-        m.x(nx * 22 * m.depth);
-        m.y(ny * 16 * m.depth);
-      });
-    };
-    panels.addEventListener("pointermove", onMove);
-    return () => panels.removeEventListener("pointermove", onMove);
+    gsap.fromTo(
+      root.querySelector(".gc-gust"),
+      { drawSVG: "0% 0%" },
+      { drawSVG: "0% 100%", ease: "none", scrollTrigger: { trigger: root.querySelector(".gc-stage"), start: "top 85%", end: "center 45%", scrub: 0.6 } },
+    );
   });
 
-  // Al abrir un panel: la foto se descubre con máscara y el contenido se
-  // revela por líneas. Al cerrarlo, todo vuelve a su lugar.
+  // Cambio de molienda: la ráfaga empuja las partículas a su nuevo tamaño.
   const first = useRef(true);
   useEffect(() => {
-    if (first.current) {
+    const root = ref.current;
+    if (!root) return;
+    const circles = root.querySelectorAll<SVGCircleElement>(".gc-ground");
+    const beans = root.querySelectorAll<SVGGElement>(".gc-bean-group");
+    const showBeans = active === "grano";
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (first.current || reduce) {
       first.current = false;
+      circles.forEach((c, i) => gsap.set(c, { attr: { r: particleRadius(active, i) } }));
+      gsap.set(beans, { opacity: showBeans ? 1 : 0, scale: 1, transformOrigin: "50% 50%" });
       return;
     }
-    const root = ref.current;
-    if (!root || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const panel = root.querySelector<HTMLElement>(`.gc-panel[data-id="${active}"]`);
-    if (!panel) return;
-    const tl = gsap.timeline({ defaults: { ease: "kz" } });
-    tl.fromTo(panel.querySelector(".gc-media-inner"), { clipPath: "inset(0% 0% 0% 22%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.7 }, 0)
-      .fromTo(panel.querySelectorAll(".gc-reveal"), { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.55, stagger: 0.07 }, 0.15)
-      .fromTo(panel.querySelectorAll(".gc-particle"), { scale: 0.6 }, { scale: 1, duration: 0.8, stagger: 0.01, transformOrigin: "50% 50%" }, 0);
+    const tl = gsap.timeline({ defaults: { overwrite: "auto" } });
+    tl.fromTo(circles, { x: -7 }, { x: 0, duration: 0.8, ease: "kz", stagger: { amount: 0.3, from: "random" } }, 0)
+      .to(circles, { attr: { r: (i: number) => particleRadius(active, i) }, duration: 0.65, ease: "kzInOut", stagger: { amount: 0.3, from: "random" } }, 0)
+      .to(
+        beans,
+        { opacity: showBeans ? 1 : 0, scale: showBeans ? 1 : 0.55, x: showBeans ? 0 : 6, duration: 0.55, ease: "kzInOut", stagger: { amount: 0.25, from: "random" }, transformOrigin: "50% 50%" },
+        0,
+      )
+      .fromTo(root.querySelectorAll(".gc-swap"), { yPercent: 110 }, { yPercent: 0, duration: 0.55, ease: "kz", stagger: 0.05 }, 0.08);
     return () => {
       tl.kill();
     };
   }, [active]);
+
+  const onKeyDown = (e: React.KeyboardEvent, i: number) => {
+    const delta = e.key === "ArrowDown" || e.key === "ArrowRight" ? 1 : e.key === "ArrowUp" || e.key === "ArrowLeft" ? -1 : 0;
+    if (!delta) return;
+    e.preventDefault();
+    const next = (i + delta + GRIND_GUIDE.length) % GRIND_GUIDE.length;
+    setActive(GRIND_GUIDE[next].id);
+    tabs.current[next]?.focus();
+  };
 
   return (
     <section ref={ref} id="a-tu-manera" aria-labelledby="gc-title" className="grind-choice relative z-10">
@@ -135,69 +100,68 @@ export function GrindChoice() {
           ]}
         />
         <p className="gc-intro t-body-lg text-ink-muted" data-reveal="fade">
-          En grano o molido: cada café indica cómo lo podés recibir. Elegí según cómo lo preparás en casa.
+          Cada método pide una molienda distinta. Elegí cómo preparás tu café y fijate cuál te conviene.
         </p>
       </header>
 
-      <div className="gc-panels" data-active={active} role="tablist" aria-label="En grano o molido">
-        {options.map((o) => {
-          const open = o.id === active;
-          const panelId = `${uid}-${o.id}`;
-          const parts = o.id === "grano" ? BEANS : GROUNDS;
-          return (
-            <article key={o.id} className="gc-panel" data-id={o.id} data-open={open || undefined} data-reveal="fade">
-              <button
-                type="button"
-                role="tab"
-                className="gc-panel-toggle"
-                aria-selected={open}
-                aria-controls={panelId}
-                onClick={() => setActive(o.id)}
-                onMouseEnter={() => setActive(o.id)}
-                onFocus={() => setActive(o.id)}
-              >
-                <span className="gc-media" aria-hidden>
-                  <span className="gc-media-inner">
-                    <EditorialImage id={o.image} alt="" sizes="(max-width: 1023px) 100vw, 60vw" className="gc-image" />
-                  </span>
-                  <svg className={`gc-layer gc-layer-${o.id}`} viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden>
-                    {parts.map((p, i) => (
-                      <g key={i} className="gc-particle" data-depth={p.depth.toFixed(2)}>
-                        {o.id === "grano" ? (
-                          <g transform={`translate(${p.x} ${p.y}) rotate(${p.r}) scale(${p.s})`}>
-                            <ellipse rx="2.2" ry="1.5" className="gc-bean" vectorEffect="non-scaling-stroke" />
-                            <path d="M-1.5 0.3 C -0.5 -0.6, 0.5 0.6, 1.5 -0.3" className="gc-bean-crease" vectorEffect="non-scaling-stroke" />
-                          </g>
-                        ) : (
-                          <circle cx={p.x} cy={p.y} r={0.35 * p.s} className="gc-ground" />
-                        )}
-                      </g>
-                    ))}
-                  </svg>
-                </span>
-                <span className="gc-panel-head">
-                  <span className={`gc-state ${o.available ? "is-ok" : "is-pending"}`}>
-                    {o.available ? "Disponible" : "Por confirmar"}
-                  </span>
-                  <span className="gc-name">{o.name}</span>
-                  <span className="gc-summary">{o.summary}</span>
-                </span>
-              </button>
-              <div id={panelId} className="gc-panel-body" role="tabpanel" aria-label={o.name}>
-                <p className="gc-detail gc-reveal">{o.detail}</p>
-                <div className="gc-reveal">
-                  {o.available ? (
-                    <a href={COLLECTION_ANCHOR} className="btn btn-primary">
-                      {o.id === "grano" ? "Ver cafés en grano" : "Ver cafés molidos"}
-                    </a>
-                  ) : (
-                    <p className="gc-wait">Se va a mostrar acá cuando esté disponible.</p>
-                  )}
-                </div>
-              </div>
-            </article>
-          );
-        })}
+      <div className="gc-layout">
+        <div className="gc-tabs" role="tablist" aria-label="Opciones de molienda" aria-orientation="vertical" data-reveal="fade">
+          {GRIND_GUIDE.map((grind, i) => (
+            <button
+              key={grind.id}
+              ref={(el) => {
+                tabs.current[i] = el;
+              }}
+              type="button"
+              role="tab"
+              id={`${uid}-tab-${grind.id}`}
+              aria-selected={grind.id === active}
+              aria-controls={`${uid}-panel`}
+              tabIndex={grind.id === active ? 0 : -1}
+              className="gc-tab"
+              onClick={() => setActive(grind.id)}
+              onKeyDown={(e) => onKeyDown(e, i)}
+            >
+              {GRIND_LABELS[grind.id]}
+            </button>
+          ))}
+        </div>
+
+        <div className="gc-stage" data-reveal="fade">
+          <svg className="gc-texture" viewBox="0 0 100 75" preserveAspectRatio="xMidYMid slice" aria-hidden>
+            <path className="gc-gust" d="M-4 60 C 18 38, 34 72, 54 48 S 84 18, 104 30" vectorEffect="non-scaling-stroke" />
+            {GROUNDS.map((p, i) => (
+              <circle key={i} className="gc-ground" cx={p.x} cy={p.y} r={0} />
+            ))}
+            {BEANS.map((p, i) => (
+              <g key={i} className="gc-bean-group">
+                <g transform={`translate(${p.x} ${p.y}) rotate(${p.rotation})`}>
+                  <ellipse rx="4.4" ry="3" className="gc-bean" />
+                  <path d="M-3.200 0.6 C -1 -1.300, 1 1.300, 3.200 -0.6" className="gc-bean-crease" vectorEffect="non-scaling-stroke" />
+                </g>
+              </g>
+            ))}
+          </svg>
+
+          <div id={`${uid}-panel`} className="gc-card" role="tabpanel" aria-labelledby={`${uid}-tab-${active}`}>
+            <div className="gc-mask">
+              <p className="gc-swap gc-texture-name">{current.texture}</p>
+            </div>
+            <div className="gc-mask">
+              <p className="gc-swap gc-similar">{current.similarTo}</p>
+            </div>
+            <div className="gc-mask">
+              <p className="gc-swap gc-use">{current.use}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="gc-foot" data-reveal="fade">
+        <p>Son las opciones del catálogo. La disponibilidad de cada molienda se confirma en la tienda, según el café.</p>
+        <a href={COLLECTION_ANCHOR} className="link-line">
+          Ver los cafés
+        </a>
       </div>
     </section>
   );

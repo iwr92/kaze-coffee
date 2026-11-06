@@ -1,27 +1,22 @@
 import type { ReactNode } from "react";
-import { storeConfig, storeHref, type StoreDestination } from "@/config/store";
+import { SALES_ENABLED, STORE_PAGES, STORE_STATUS_ANCHOR } from "@/config/store";
 
 interface StoreLinkProps {
-  destination?: StoreDestination;
   className?: string;
   children: ReactNode;
 }
 
 /**
- * Enlace a la tienda Tiendanube. Si la URL no está configurada, lleva a la
- * sección #tienda en lugar de a una dirección inventada.
+ * Enlace a la tienda WooCommerce. Con ventas apagadas lleva al estado de
+ * apertura dentro de la landing.
  */
-export function StoreLink({ destination = "home", className, children }: StoreLinkProps) {
-  const href = storeHref(destination);
-  if (!href) {
-    return (
-      <a href={storeConfig.fallbackAnchor} className={className} data-store-pending="">
-        {children}
-      </a>
-    );
-  }
-  return (
-    <a href={href} className={className} rel="noopener">
+export function StoreLink({ className, children }: StoreLinkProps) {
+  return SALES_ENABLED ? (
+    <a href={STORE_PAGES.shop} className={className} rel="noopener">
+      {children}
+    </a>
+  ) : (
+    <a href={STORE_STATUS_ANCHOR} className={className}>
       {children}
     </a>
   );

@@ -1,13 +1,25 @@
-import { storeConfig } from "@/config/store";
-import { StoreLink } from "./StoreLink";
+import { SALES_ENABLED, STORE_PAGES } from "@/config/store";
 
-/**
- * Pie completo en tema Negro: marca, navegación, estado de la tienda y
- * firma. Solo enlaces que existen; nada de páginas legales o redes
- * inventadas.
- */
+const SECTIONS = [
+  { href: "#cafes", label: "Cafés" },
+  { href: "#a-tu-manera", label: "A tu manera" },
+  { href: "#guia", label: "Guía Home Barista" },
+  { href: "#ritual", label: "El ritual" },
+  { href: "#diferencia", label: "Por qué KAZE" },
+  { href: "#preguntas", label: "Preguntas frecuentes" },
+];
+
+const STORE_LINKS = [
+  { href: STORE_PAGES.shop, label: "Ir a la tienda" },
+  { href: STORE_PAGES.shipping, label: "Política de envíos" },
+  { href: STORE_PAGES.returns, label: "Cambios y devoluciones" },
+  { href: STORE_PAGES.terms, label: "Términos y condiciones" },
+  { href: STORE_PAGES.privacy, label: "Política de privacidad" },
+  { href: STORE_PAGES.withdrawal, label: "Botón de arrepentimiento" },
+];
+
+/** Pie en tema Negro. Las páginas de la tienda se enlazan cuando abre. */
 export function SiteFooter() {
-  const ready = Boolean(storeConfig.url);
   return (
     <footer className="site-footer theme-negro relative z-10">
       <div className="footer-grid">
@@ -16,60 +28,39 @@ export function SiteFooter() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/brand/logos/svg/kaze-firma-horizontal-crema.svg" alt="Kaze" width={280} height={64} className="footer-logo" />
           <p className="footer-about">
-            Tienda online de café de especialidad. Seleccionamos cafés de distintos tostadores para que los
+            Tienda online argentina de café de especialidad. Seleccionamos cafés de proveedores reales para que los
             disfrutes en casa, a tu ritmo.
           </p>
         </div>
 
-        <nav className="footer-col" aria-label="Tienda">
-          <h2 className="footer-heading">Tienda</h2>
+        <nav className="footer-col" aria-label="Secciones">
+          <h2 className="footer-heading">KAZE</h2>
           <ul>
-            <li>
-              <a href="#cafes" className="footer-link">
-                Cafés
-              </a>
-            </li>
-            <li>
-              <a href="#a-tu-manera" className="footer-link">
-                En grano o molido
-              </a>
-            </li>
-            <li>
-              {ready ? (
-                <StoreLink destination="collection" className="footer-link">
-                  Ir a la tienda
-                </StoreLink>
-              ) : (
-                <span className="footer-muted">La tienda online abre pronto</span>
-              )}
-            </li>
+            {SECTIONS.map((link) => (
+              <li key={link.href}>
+                <a href={link.href} className="footer-link">
+                  {link.label}
+                </a>
+              </li>
+            ))}
           </ul>
         </nav>
 
-        <nav className="footer-col" aria-label="Kaze">
-          <h2 className="footer-heading">Kaze</h2>
-          <ul>
-            <li>
-              <a href="#ritual" className="footer-link">
-                El ritual
-              </a>
-            </li>
-            <li>
-              <a href="#descubri" className="footer-link">
-                Descubrí tu café
-              </a>
-            </li>
-            <li>
-              <a href="#kaze" className="footer-link">
-                Por qué KAZE
-              </a>
-            </li>
-            <li>
-              <a href="#top" className="footer-link">
-                Volver arriba
-              </a>
-            </li>
-          </ul>
+        <nav className="footer-col" aria-label="Tienda">
+          <h2 className="footer-heading">Tienda</h2>
+          {SALES_ENABLED ? (
+            <ul>
+              {STORE_LINKS.map((link) => (
+                <li key={link.href}>
+                  <a href={link.href} className="footer-link" rel="noopener">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="footer-muted">La tienda abre pronto.</p>
+          )}
         </nav>
       </div>
 

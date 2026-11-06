@@ -8,17 +8,16 @@ npm run dev                 # http://localhost:3000
 npm run build && npm start  # producción
 ```
 
-## Tienda (Tiendanube)
+## Tienda (WooCommerce)
 
-Copiá `.env.example` a `.env.local` y completá la URL pública de la tienda:
+La compra termina siempre en [tienda.kazecoffee.shop](https://tienda.kazecoffee.shop). Las ventas se activan con:
 
 ```
-NEXT_PUBLIC_TIENDANUBE_STORE_URL=https://tu-tienda.mitiendanube.com
-NEXT_PUBLIC_TIENDANUBE_COLLECTION_PATH=/productos/
+NEXT_PUBLIC_KAZE_SALES_ENABLED=false
 ```
 
-Sin URL, todos los CTAs llevan a la sección `#tienda`, que muestra "La tienda online abre pronto".
-La configuración está centralizada en `src/config/store.ts`.
+Catálogo: `src/commerce/products.ts`. Tienda: `src/config/store.ts`.
+Estado del lanzamiento, fuentes y tareas pendientes: `docs/lanzamiento/README.md`.
 
 ## Secuencia cinematográfica
 
@@ -60,7 +59,13 @@ Los límites de memoria y DPR de cada variante están en `CinematicMediaControll
 La secuencia anterior (1280 / 720) sigue en `public/cinematic/seq/` solo como respaldo. Se puede borrar
 cuando se apruebe la nueva: suma 39 MB al deploy.
 
-## V6: motion editorial (actual)
+## Lanzamiento comercial (actual)
+
+Tres cafés reales, WooCommerce, guía KAZE Home Barista, preguntas frecuentes y SEO, sobre el sistema
+de movimiento de la V6. Detalle: `docs/lanzamiento/README.md`.
+Punto de recuperación: tag `pre-commercial-launch-2026-11-06`.
+
+## V6: motion editorial
 
 Sistema de movimiento del viento (titulares cinéticos, ráfagas SVG, revelados), hero de campaña,
 colección con telón y numeral, A tu manera por capas, Ritual, Descubrí tu café y cierre con transición.
@@ -92,7 +97,8 @@ npm run editorial:build      # genera public/editorial/ (AVIF + WebP)
 ## Código
 
 ```
-src/config/store.ts                     URL de la tienda
+src/config/store.ts                     tienda e interruptor de ventas
+src/config/site.ts                      dominio e indexación
 src/cinematic/
   manifest.ts                           contrato del manifiesto
   moments.ts                            textos y sincronía de los 4 momentos
@@ -105,15 +111,17 @@ src/components/
   cinematic/EditorialOverlay            textos HTML
   cinematic/ScrollProgress              indicador discreto
   cinematic/StaticCinematic             versión ligera (movimiento reducido / ahorro de datos)
-  BrandHeader, FinalCTA, StoreLink, SiteFooter
-src/commerce/products.ts                catálogo (tipo Product, sin datos inventados)
-src/config/grind.ts                     moliendas confirmadas y su fuente
+  BrandHeader, StoreLink, SiteFooter, StructuredData
+src/commerce/products.ts                catálogo
+src/commerce/woocommerce.ts             lectura del estado real de la tienda
+src/commerce/cta.ts, faq.ts             botones, disponibilidad y preguntas frecuentes
+src/config/grind.ts                     guía de moliendas
 src/components/commerce/                ProductShowcase, GrindChoice
-src/components/hero/HeroComposition.tsx hero 60/40 (cinematográfico y estático)
-src/components/sections/                Ritual, DiscoverCoffee, FinalConversion
+src/components/hero/HeroComposition.tsx hero (cinematográfico y estático)
+src/components/sections/                TrustStrip, HomeBarista, Ritual, Difference, Faq, FinalConversion
 src/components/motion/                  curvas (ease.ts), revelados (useReveals.ts),
                                         KineticTitle (titulares) y Wind (ráfagas SVG)
-src/styles/v6.css                       estilos V6
+src/styles/v6.css, launch.css           estilos base y secciones comerciales
 scripts/cinematic/build-sequence.mjs    pipeline FFmpeg
 scripts/editorial/build-editorial.mjs   fotografías editoriales
 archive/prototype-v1-webgl/             prototipo anterior (Three.js), fuera del build
