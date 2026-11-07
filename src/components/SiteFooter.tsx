@@ -1,4 +1,4 @@
-import { SALES_ENABLED, STORE_PAGES } from "@/config/store";
+import { STORE_PAGES } from "@/config/store";
 
 const SECTIONS = [
   { href: "#cafes", label: "Cafés" },
@@ -18,7 +18,7 @@ const STORE_LINKS = [
   { href: STORE_PAGES.withdrawal, label: "Botón de arrepentimiento" },
 ];
 
-/** Pie en tema Negro. Las páginas de la tienda se enlazan cuando abre. */
+/** Pie en tema Negro, con las páginas de la tienda. */
 export function SiteFooter() {
   return (
     <footer className="site-footer theme-negro relative z-10">
@@ -48,8 +48,7 @@ export function SiteFooter() {
 
         <nav className="footer-col" aria-label="Tienda">
           <h2 className="footer-heading">Tienda</h2>
-          {SALES_ENABLED ? (
-            <ul>
+          <ul>
               {STORE_LINKS.map((link) => (
                 <li key={link.href}>
                   <a href={link.href} className="footer-link" rel="noopener">
@@ -57,10 +56,7 @@ export function SiteFooter() {
                   </a>
                 </li>
               ))}
-            </ul>
-          ) : (
-            <p className="footer-muted">La tienda abre pronto.</p>
-          )}
+          </ul>
         </nav>
       </div>
 

@@ -1,12 +1,12 @@
-import { STORE_URL, SALES_ENABLED } from "@/config/store";
+import { STORE_URL } from "@/config/store";
 import { PRODUCTS, type GrindId, type Product } from "./products";
 
 /**
- * Lectura del estado real de WooCommerce (solo con ventas activas).
+ * Lectura del estado real de WooCommerce.
  *
  * Usa la API pública de la tienda, de solo lectura. No hay carrito, checkout
  * ni inventario en Next.js: las URL, el precio, las moliendas y el stock salen
- * de la tienda. Con ventas desactivadas no se consulta nada.
+ * de la tienda.
  */
 
 const API = `${STORE_URL}/wp-json/wc/store/v1`;
@@ -94,7 +94,6 @@ async function withWooState(product: Product, list: WooProduct[]): Promise<Produ
  * verificados y `available` queda en `null`: no se afirma nada sobre el stock.
  */
 export async function resolveCatalog(): Promise<Product[]> {
-  if (!SALES_ENABLED) return PRODUCTS;
   try {
     const list = await getJson<WooProduct[]>("/products?per_page=100");
     return await Promise.all(PRODUCTS.map((product) => withWooState(product, list)));

@@ -3,12 +3,13 @@
  *
  * Fuentes (verificadas el 2026-11-06, ver docs/lanzamiento/README.md):
  *  - Datos de cada café: fichas oficiales de tienda.bell-coffee.com.
- *  - Precio, enlaces y moliendas: WooCommerce (tienda.kazecoffee.shop).
+ *  - Precio, enlaces y moliendas: WooCommerce (tienda.kazecoffee.shop),
+ *    verificados el 2026-11-07. Son el respaldo si la API no responde.
  *
  * Este archivo se publica: nunca agregar costos, márgenes ni cantidades
  * compradas. El stock real se gestiona solo en WooCommerce.
  *
- * Con ventas activas, `resolveCatalog` (woocommerce.ts) reemplaza `productUrl`,
+ * `resolveCatalog` (woocommerce.ts) reemplaza `productUrl`,
  * `price`, `grindOptions` y `available` por el estado real de la tienda.
  */
 
@@ -71,13 +72,13 @@ export const PRODUCTS: Product[] = [
     supplier: '',
     origin: "Colombia y Brasil",
     weightGrams: 250,
-    price: 24900,
+    price: 22900,
     currency: "ARS",
     description:
       "Cuatro granos, dos de Colombia y dos de Brasil, pensados para una taza equilibrada, con cuerpo y muy buena crema.",
     tastingNotes: ["Castaña", "Chocolate", "Cacao", "Frutos rojos"],
     recommendedMethods: ["Espresso"],
-    grindOptions: [],
+    grindOptions: ["grano", "espresso", "filtro", "prensa", "moka"],
     images: [
       {
         src: "/products/blend-colombia-brasil.webp",
@@ -86,7 +87,7 @@ export const PRODUCTS: Product[] = [
         height: 2528,
       },
     ],
-    productUrl: null,
+    productUrl: "https://tienda.kazecoffee.shop/producto/blend-colombia-brasil/",
     available: null,
     facts: [
       { label: "Origen", value: "Colombia y Brasil" },
@@ -106,13 +107,13 @@ export const PRODUCTS: Product[] = [
     supplier: '',
     origin: "Perú, Valle de Cajamarca",
     weightGrams: 250,
-    price: 24900,
+    price: 22900,
     currency: "ARS",
     description:
       "Arábica lavado del Valle de Cajamarca, de fincas entre 1.200 y 2.400 msnm. Una taza equilibrada, aromática y con carácter.",
     tastingNotes: ["Afrutado", "Frutos secos"],
     recommendedMethods: [],
-    grindOptions: [],
+    grindOptions: ["grano", "espresso", "filtro", "moka"],
     images: [
       {
         src: "/products/peru-cajamarca.webp",
@@ -121,7 +122,7 @@ export const PRODUCTS: Product[] = [
         height: 960,
       },
     ],
-    productUrl: null,
+    productUrl: "https://tienda.kazecoffee.shop/producto/peru-cajamarca/",
     available: null,
     facts: [
       { label: "Región", value: "Valle de Cajamarca" },
@@ -142,7 +143,7 @@ export const PRODUCTS: Product[] = [
     supplier: '',
     origin: "Etiopía, bosques de Kaffa",
     weightGrams: 250,
-    price: 24900,
+    price: 26900,
     currency: "ARS",
     description:
       "De la finca Tega & Tula, en los bosques silvestres de Kaffa. Variedad heirloom y proceso natural.",

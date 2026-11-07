@@ -1,4 +1,4 @@
-import { SALES_ENABLED, STORE_PAGES } from "@/config/store";
+import { STORE_PAGES } from "@/config/store";
 
 export interface FaqItem {
   question: string;
@@ -29,16 +29,13 @@ export const FAQ: FaqItem[] = [
   },
   {
     question: "¿Dónde consulto los envíos?",
-    answer: SALES_ENABLED
-      ? "Las opciones, los costos y los plazos de envío figuran en la tienda, antes de pagar."
-      : "Las opciones, los costos y los plazos de envío se van a informar en la tienda cuando abra.",
-    link: SALES_ENABLED ? { href: STORE_PAGES.shipping, label: "Ver la política de envíos" } : undefined,
+    answer: "Las opciones, los costos y los plazos de envío figuran en la tienda, antes de pagar.",
+    link: { href: STORE_PAGES.shipping, label: "Ver la política de envíos" },
   },
   {
     question: "¿Cómo realizo mi compra?",
-    answer: SALES_ENABLED
-      ? "Elegí tu café acá y terminá la compra en nuestra tienda, donde seleccionás la molienda, el envío y el medio de pago."
-      : "La compra se va a realizar en nuestra tienda, que abre pronto. Ahí vas a elegir la molienda, el envío y el medio de pago.",
-    link: SALES_ENABLED ? { href: STORE_PAGES.shop, label: "Comprar en la tienda" } : undefined,
+    answer:
+      "Elegí tu café acá y terminá la compra en nuestra tienda, donde seleccionás la molienda, el envío y el medio de pago.",
+    link: { href: STORE_PAGES.shop, label: "Ir a la tienda" },
   },
 ];

@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { availabilityText, productCta } from "@/commerce/cta";
 import { formatPrice, formatWeight, GRIND_LABELS, type Product } from "@/commerce/products";
-import { SALES_ENABLED } from "@/config/store";
 import { gsap } from "../motion/ease";
 import { KineticTitle } from "../motion/KineticTitle";
 import { useReveals } from "../motion/useReveals";
@@ -192,7 +191,9 @@ export function ProductShowcase({ products }: { products: Product[] }) {
                 ))}
               </div>
             </div>
-            <figcaption className="sc-caption">Imagen ilustrativa del packaging de {product.supplier}.</figcaption>
+            <figcaption className="sc-caption">
+              {product.supplier ? `Imagen ilustrativa del packaging de ${product.supplier}.` : "Imagen ilustrativa del packaging."}
+            </figcaption>
           </figure>
 
           <div className="sc-info" ref={infoRef}>
@@ -203,21 +204,9 @@ export function ProductShowcase({ products }: { products: Product[] }) {
             <ProductInfo product={product} />
 
             <div className="sc-buy">
-              {cta.href ? (
-                <a href={cta.href} className="btn btn-primary btn-lg sc-buy-cta" rel="noopener">
-                  {cta.label}
-                </a>
-              ) : (
-                <button
-                  type="button"
-                  className="btn btn-primary btn-lg sc-buy-cta"
-                  aria-expanded={factsOpen}
-                  aria-controls={factsId}
-                  onClick={() => setFactsOpen((open) => !open)}
-                >
-                  {factsOpen ? "Ocultar ficha" : cta.label}
-                </button>
-              )}
+              <a href={cta.href} className="btn btn-primary btn-lg sc-buy-cta" rel="noopener">
+                {cta.label}
+              </a>
               <div className="sc-arrows">
                 <button type="button" className="sc-arrow" onClick={() => go(index - 1, -1)} aria-label="Café anterior">
                   <Arrow dir={-1} />
@@ -228,17 +217,15 @@ export function ProductShowcase({ products }: { products: Product[] }) {
               </div>
             </div>
 
-            {SALES_ENABLED && (
-              <button
-                type="button"
-                className="link-line sc-facts-toggle"
-                aria-expanded={factsOpen}
-                aria-controls={factsId}
-                onClick={() => setFactsOpen((open) => !open)}
-              >
-                {factsOpen ? "Ocultar ficha" : "Ver ficha"}
-              </button>
-            )}
+            <button
+              type="button"
+              className="link-line sc-facts-toggle"
+              aria-expanded={factsOpen}
+              aria-controls={factsId}
+              onClick={() => setFactsOpen((open) => !open)}
+            >
+              {factsOpen ? "Ocultar ficha" : "Ver ficha"}
+            </button>
             <div id={factsId} className="sc-facts" data-open={factsOpen || undefined} inert={!factsOpen}>
               <div className="sc-facts-inner">
                 <dl className="sc-facts-list">
@@ -249,7 +236,9 @@ export function ProductShowcase({ products }: { products: Product[] }) {
                     </div>
                   ))}
                 </dl>
-                <p className="sc-facts-source">Según la ficha de {product.supplier}.</p>
+                <p className="sc-facts-source">
+                  {product.supplier ? `Según la ficha de ${product.supplier}.` : "Según la ficha del tostador."}
+                </p>
               </div>
             </div>
           </div>
@@ -285,24 +274,9 @@ export function ProductShowcase({ products }: { products: Product[] }) {
             <span className="sc-sticky-name">{product.name}</span>
             <span className="sc-sticky-price">{formatPrice(product.price)}</span>
           </div>
-          {cta.href ? (
-            <a href={cta.href} className="btn btn-primary sc-sticky-cta" rel="noopener">
-              {cta.label}
-            </a>
-          ) : (
-            <button
-              type="button"
-              className="btn btn-primary sc-sticky-cta"
-              aria-expanded={factsOpen}
-              aria-controls={factsId}
-              onClick={() => {
-                setFactsOpen(true);
-                infoRef.current?.scrollIntoView({ block: "start" });
-              }}
-            >
-              {cta.label}
-            </button>
-          )}
+          <a href={cta.href} className="btn btn-primary sc-sticky-cta" rel="noopener">
+            {cta.label}
+          </a>
         </div>
       </div>
 
@@ -319,7 +293,7 @@ function ProductInfo({ product }: { product: Product }) {
     <div className="sc-fields">
       <div className="sc-reveal">
         <p className="sc-roaster">
-          {product.supplier} · {product.origin}
+          {product.supplier ? `${product.supplier} · ${product.origin}` : product.origin}
         </p>
       </div>
       <div className="sc-reveal">
@@ -336,7 +310,7 @@ function ProductInfo({ product }: { product: Product }) {
       <dl className="sc-specs">
         <Spec term="Peso" value={formatWeight(product.weightGrams)} />
         <Spec
-          term={SALES_ENABLED ? "Moliendas con stock" : "Moliendas"}
+          term="Moliendas"
           value={grinds || "Se confirman en la tienda"}
         />
         {product.recommendedMethods.length > 0 && <Spec term="Recomendado para" value={product.recommendedMethods.join(", ")} />}

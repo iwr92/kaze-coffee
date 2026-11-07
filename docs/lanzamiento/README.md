@@ -5,19 +5,19 @@ Estado verificado el 2026-11-06. Punto de recuperación: tag de git `pre-commerc
 ## Cómo funciona
 
 - **Datos:** `src/commerce/products.ts` es la única fuente. Este repositorio se publica: nunca agregar costos, márgenes ni cantidades compradas.
-- **Ventas:** `NEXT_PUBLIC_KAZE_SALES_ENABLED`. Cualquier valor distinto de `true` las deja apagadas.
-- **Estado real:** con ventas activas, `src/commerce/woocommerce.ts` lee la API pública de la tienda cada 5 minutos.
+- **Ventas:** abiertas desde el 2026-11-07. Se quitó el interruptor `NEXT_PUBLIC_KAZE_SALES_ENABLED`: si sigue definido en Vercel, se ignora.
+- **Estado real:** `src/commerce/woocommerce.ts` lee la API pública de la tienda cada 5 minutos. Si no responde, se usan los datos de `products.ts` sin afirmar stock.
 - **Checkout:** solo en WooCommerce. La landing no tiene carrito ni inventario.
 
-| | Ventas apagadas (`false`) | Ventas activas (`true`) |
-|---|---|---|
-| Productos y precios | Datos de `products.ts` | Precio de WooCommerce |
-| Botón del café | "Ver café": abre la ficha en la página | "Elegir molienda" o "Comprar en la tienda": va al producto |
-| Café sin publicar | Igual que los demás | "Explorar todos los cafés": va a `/tienda/` |
-| Estado | "La tienda abre pronto" | Según el stock de WooCommerce |
-| Moliendas | Las del catálogo verificado | Solo las variantes con stock |
-| Enlaces a la tienda | Ninguno | Botones, pie y preguntas frecuentes |
-| Datos estructurados | Sin `availability` | `availability` solo si WooCommerce la informa |
+| | Comportamiento |
+|---|---|
+| Precios | Los de WooCommerce. Respaldo en `products.ts`: 22.900 / 22.900 / 26.900 ARS |
+| Botón del café | "Elegir molienda" (o "Comprar"): va a la ficha del producto en la tienda |
+| Café sin publicar | "Ir a la tienda": va a `/tienda/` |
+| Estado | Según el stock de WooCommerce |
+| Moliendas | Solo las variantes con stock |
+| Enlaces a la tienda | Encabezado, menú móvil, catálogo, cierre, pie y preguntas frecuentes |
+| Datos estructurados | `availability` solo si WooCommerce la informa |
 
 Un producto se reconoce en WooCommerce por las palabras de `wooNameTokens`: la URL sale de la tienda, no se escribe a mano.
 

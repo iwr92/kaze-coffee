@@ -1,7 +1,6 @@
 import { FAQ } from "@/commerce/faq";
 import type { Product } from "@/commerce/products";
 import { SITE_DESCRIPTION, SITE_URL } from "@/config/site";
-import { SALES_ENABLED } from "@/config/store";
 
 /** Disponibilidad solo si WooCommerce la confirma. Sin reseñas ni puntuaciones. */
 function offer(product: Product) {
@@ -9,8 +8,8 @@ function offer(product: Product) {
     "@type": "Offer",
     price: product.price,
     priceCurrency: product.currency,
-    url: product.productUrl && SALES_ENABLED ? product.productUrl : `${SITE_URL}/#cafes`,
-    ...(SALES_ENABLED && product.available !== null
+    url: product.productUrl ?? `${SITE_URL}/#cafes`,
+    ...(product.available !== null
       ? { availability: product.available ? "https://schema.org/InStock" : "https://schema.org/OutOfStock" }
       : {}),
   };
@@ -40,7 +39,7 @@ export function StructuredData({ products }: { products: Product[] }) {
         name: product.name,
         description: product.description,
         image: `${SITE_URL}${product.images[0].src}`,
-        brand: { "@type": "Brand", name: product.supplier },
+        ...(product.supplier ? { brand: { "@type": "Brand", name: product.supplier } } : {}),
         weight: { "@type": "QuantitativeValue", value: product.weightGrams, unitCode: "GRM" },
         offers: offer(product),
       })),

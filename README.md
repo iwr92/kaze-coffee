@@ -10,11 +10,8 @@ npm run build && npm start  # producción
 
 ## Tienda (WooCommerce)
 
-La compra termina siempre en [tienda.kazecoffee.shop](https://tienda.kazecoffee.shop). Las ventas se activan con:
-
-```
-NEXT_PUBLIC_KAZE_SALES_ENABLED=false
-```
+La compra termina siempre en [tienda.kazecoffee.shop](https://tienda.kazecoffee.shop). Los botones comerciales
+van a la tienda, y el precio, las moliendas y el stock se leen de su API pública cada 5 minutos.
 
 Catálogo: `src/commerce/products.ts`. Tienda: `src/config/store.ts`.
 Estado del lanzamiento, fuentes y tareas pendientes: `docs/lanzamiento/README.md`.
@@ -97,7 +94,7 @@ npm run editorial:build      # genera public/editorial/ (AVIF + WebP)
 ## Código
 
 ```
-src/config/store.ts                     tienda e interruptor de ventas
+src/config/store.ts                     URLs de la tienda
 src/config/site.ts                      dominio e indexación
 src/cinematic/
   manifest.ts                           contrato del manifiesto

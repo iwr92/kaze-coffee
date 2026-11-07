@@ -1,8 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { COLLECTION_ANCHOR } from "@/cinematic/moments";
-import { SALES_ENABLED, STORE_PAGES } from "@/config/store";
+import { STORE_PAGES } from "@/config/store";
 import { gsap } from "../motion/ease";
 import { KineticTitle } from "../motion/KineticTitle";
 import { useReveals } from "../motion/useReveals";
@@ -56,21 +55,13 @@ export function FinalConversion() {
             ]}
           />
           <div className="final-actions" data-reveal="fade">
-            {SALES_ENABLED ? (
-              <a href={STORE_PAGES.shop} className="btn btn-light btn-lg" rel="noopener">
-                Explorar todos los cafés
-              </a>
-            ) : (
-              <>
-                <a href={COLLECTION_ANCHOR} className="btn btn-light btn-lg">
-                  Explorar todos los cafés
-                </a>
-                <p className="final-status">
-                  <span className="sc-note-dot" aria-hidden />
-                  La tienda abre pronto.
-                </p>
-              </>
-            )}
+            <a href={STORE_PAGES.shop} className="btn btn-light btn-lg" rel="noopener">
+              Ir a la tienda
+            </a>
+            <p className="final-status">
+              <span className="sc-note-dot" aria-hidden />
+              Elegí tu café y tu molienda. Comprá online.
+            </p>
           </div>
         </div>
       </div>
