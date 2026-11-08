@@ -1,0 +1,731 @@
+/*
+ * KAZE EN CASA — bebidas preparadas. Campaña con paleta propia dentro de la
+ * landing: rompe el ritmo perla / crema / negro y vuelve al perla al salir.
+ * Todo queda acotado a .ec: no cambia estilos globales.
+ *
+ * Paleta exclusiva (src/commerce/drinks.ts, EC_COLORS):
+ *   borgoña #481C24 · espresso #6D3828 · caramelo #D68B48
+ *   crema #FFF0DC · blanco cálido #FFF9F3
+ */
+
+.ec {
+  --ec-borgona: #481c24;
+  --ec-espresso: #6d3828;
+  --ec-caramelo: #d68b48;
+  --ec-crema: #fff0dc;
+  --ec-blanco: #fff9f3;
+  --ec-muted: rgb(255 249 243 / 0.72);
+  --ec-soft: rgb(255 249 243 / 0.86);
+  --ec-rule: rgb(255 240 220 / 0.2);
+
+  /* Ambiente HOT (por defecto). GSAP interpola estas variables al cambiar. */
+  --ec-bg: var(--ec-borgona);
+  --ec-halo: var(--ec-espresso);
+  --ec-accent: var(--ec-caramelo);
+  --ec-on-accent: var(--ec-borgona);
+
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  /* Debajo del iris: el perla de la página. */
+  background: var(--color-pearl);
+  color: var(--ec-blanco);
+  padding: 14vh 0 calc(4vh + 96px);
+}
+.ec[data-temp="iced"] {
+  --ec-bg: var(--ec-espresso);
+  --ec-halo: var(--ec-borgona);
+  --ec-accent: var(--ec-crema);
+  --ec-on-accent: var(--ec-espresso);
+}
+.ec :focus-visible {
+  outline: 2px solid var(--ec-accent);
+  outline-offset: 3px;
+}
+.ec ::selection {
+  background: var(--ec-crema);
+  color: var(--ec-borgona);
+}
+
+.ec-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--ec-bg);
+}
+
+/* Elementos que cambian con el selector: comparten celda; solo el activo se ve. */
+.ec-stack {
+  display: grid;
+}
+.ec-stack > * {
+  grid-area: 1 / 1;
+}
+.ec [data-swap]:not([data-active]) {
+  visibility: hidden;
+}
+
+.ec-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--kz-gutter);
+}
+
+/* ——— Encabezado de campaña ——— */
+.ec-eyebrow {
+  margin: 0;
+  color: var(--ec-accent);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+}
+.ec-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 2px;
+}
+.ec-mask-in {
+  display: inline-block;
+}
+.ec-slash {
+  margin: 0 0.5em;
+  opacity: 0.6;
+}
+.ec-title {
+  margin-top: 22px;
+  color: var(--ec-blanco);
+  font-size: 16.5vw;
+  line-height: 0.9;
+}
+.ec-title .kt-serif {
+  letter-spacing: -0.045em;
+}
+.ec-title .kt-italic {
+  color: var(--ec-crema);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+.ec-sub {
+  margin: 22px 0 0;
+  color: var(--ec-muted);
+  font-size: 18px;
+  line-height: 27px;
+}
+
+/* ——— Selector HOT / ICED ——— */
+.ec-switch {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 36px;
+  padding: 4px;
+  border: 1px solid var(--ec-rule);
+  border-radius: 999px;
+}
+.ec-pill {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  transition: transform 650ms var(--ease-swap);
+}
+.ec-switch[data-temp="iced"] .ec-pill {
+  transform: translateX(100%);
+}
+.ec-pill-inner {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--ec-accent);
+}
+.ec-tab {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 60px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ec-blanco);
+  cursor: pointer;
+  transition:
+    color 420ms var(--ease-editorial),
+    transform 200ms var(--ease-editorial);
+}
+.ec-tab:active {
+  transform: scale(0.97);
+}
+.ec-tab[aria-selected="true"] {
+  color: var(--ec-on-accent);
+}
+.ec-tab-label {
+  font-size: 15px;
+  line-height: 18px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  /* Compensa el espaciado final para que el texto quede centrado. */
+  margin-right: -0.28em;
+  transition: letter-spacing 420ms var(--ease-editorial);
+}
+.ec-tab:hover .ec-tab-label {
+  letter-spacing: 0.34em;
+}
+.ec-tab-caption {
+  font-size: 12px;
+  line-height: 14px;
+  opacity: 0.75;
+}
+
+/* ——— Escena: palabra monumental, halo, bebida y gráficos ——— */
+.ec-visual {
+  position: relative;
+  /* Alto suficiente para que la capa de la foto (120 % de la caja) entre entera. */
+  height: 128vw;
+  max-height: 720px;
+  margin: 18px calc(var(--kz-gutter) * -1) 0;
+}
+.ec-depth {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.ec-depth-word {
+  place-items: end center;
+  /* Móvil: la palabra no invade el nombre de la bebida. */
+  padding-bottom: 12%;
+}
+.ec-word {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 34vw;
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--ec-accent);
+  /* Textura de fondo: acompaña, no compite con la bebida. */
+  opacity: 0.38;
+  white-space: nowrap;
+  text-align: center;
+}
+.ec-halo {
+  position: relative;
+  width: 84%;
+  aspect-ratio: 1;
+}
+/* El halo es un fondo para la bebida: disco más chico y tenue, anillo apenas marcado.
+   (La opacidad va en los hijos: la entrada GSAP fija la de .ec-halo.) */
+.ec-halo-disc {
+  position: absolute;
+  inset: 13%;
+  border-radius: 50%;
+  background: var(--ec-halo);
+  opacity: 0.72;
+}
+.ec-halo-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: var(--ec-accent);
+  stroke-width: 0.4;
+  opacity: 0.26;
+}
+/* Solo las marcas mayores (cada 4): el resto del dial se calla. */
+.ec-halo-ring line {
+  display: none;
+}
+.ec-halo-ring line:nth-child(4n + 2) {
+  display: inline;
+}
+.ec-product {
+  position: relative;
+  width: 80%;
+  aspect-ratio: 4 / 5;
+  pointer-events: auto;
+}
+.ec-layer {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+}
+/*
+ * Fotografía real con alfa. El recorte ocupa ~54 % × 80 % de su lienzo 4:5:
+ * la capa crece por fuera de la caja del placeholder para que el vaso tenga
+ * escala de protagonista, sin cortarse (el sorbete arranca al 7 % del lienzo).
+ */
+.ec-layer-photo {
+  inset: -12% -12% -8%;
+  /* Capa propia: la sombra se rasteriza una vez y el crossfade es solo composición. */
+  will-change: transform, opacity;
+}
+.ec-photo {
+  object-fit: contain;
+  /* Sombra proyectada cálida y un filo crema mínimo que despega el sorbete negro del fondo. */
+  filter: drop-shadow(0 26px 34px rgb(20 6 9 / 0.5)) drop-shadow(0 0 0.8px rgb(255 240 220 / 0.6));
+}
+.ec-photo-shadow {
+  position: absolute;
+  left: 50%;
+  top: 84.5%;
+  width: 38%;
+  height: 5%;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: rgb(20 6 9 / 0.6);
+  filter: blur(12px);
+}
+.ec-fx {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: var(--ec-crema);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  /* stroke-opacity (no opacity): la entrada GSAP fija la opacidad del svg. */
+  stroke-opacity: 0.42;
+}
+
+/* Placeholder de la fase 1 (sin fotografías finales). */
+.ec-ph {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--ec-crema);
+  text-align: center;
+}
+.ec-ph-crop {
+  position: absolute;
+  inset: 0;
+  border: 1px dashed var(--ec-rule);
+}
+/* Marcas de corte en las cuatro esquinas. */
+.ec-ph-crop::before,
+.ec-ph-crop::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: var(--ec-accent);
+  border-style: solid;
+}
+.ec-ph-crop::before {
+  top: -1px;
+  left: -1px;
+  border-width: 1px 0 0 1px;
+}
+.ec-ph-crop::after {
+  right: -1px;
+  bottom: -1px;
+  border-width: 0 1px 1px 0;
+}
+.ec-ph-vessel {
+  width: 46%;
+  height: auto;
+  fill: none;
+  stroke: var(--ec-crema);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+.ec-ph-tag {
+  margin-top: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--ec-accent);
+  color: var(--ec-accent);
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.ec-ph-file {
+  color: var(--ec-muted);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* ——— Panel: bebida activa y protagonistas ——— */
+.ec-tabpanel {
+  margin-top: 8px;
+}
+.ec-line {
+  display: block;
+  overflow: hidden;
+  /* Aire para acentos y descendentes dentro de la máscara. */
+  padding: 0.08em 0 0.14em;
+  margin: -0.08em 0 -0.14em;
+}
+.ec-line > span {
+  display: block;
+}
+.ec-kicker {
+  margin: 0;
+  color: var(--ec-accent);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.ec-name {
+  margin: 10px 0 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.75rem, 12.5vw, 5rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.ec-desc {
+  margin: 14px 0 0;
+  color: var(--ec-soft);
+  font-size: 18px;
+  line-height: 27px;
+}
+
+.ec-picks-stack {
+  margin-top: 28px;
+}
+.ec-pick-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ec-pick {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  width: 100%;
+  min-height: 80px;
+  padding: 14px 0 12px;
+  border: 0;
+  border-top: 1px solid var(--ec-rule);
+  background: transparent;
+  color: var(--ec-soft);
+  text-align: left;
+  cursor: pointer;
+  transition: color 300ms var(--ease-editorial);
+}
+.ec-pick:hover,
+.ec-pick[aria-pressed="true"] {
+  color: var(--ec-blanco);
+}
+.ec-pick[aria-pressed="true"] {
+  border-top-color: var(--ec-accent);
+  box-shadow: inset 0 1px 0 var(--ec-accent);
+}
+.ec-pick-index {
+  color: var(--ec-accent);
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+}
+.ec-pick-name {
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
+  transition: transform 300ms var(--ease-editorial);
+}
+.ec-pick[aria-pressed="true"] .ec-pick-name {
+  font-weight: 600;
+}
+.ec-pick:hover .ec-pick-name {
+  transform: translateX(3px);
+}
+.ec-extras {
+  margin: 16px 0 0;
+  color: var(--ec-muted);
+  font-size: 14px;
+  line-height: 20px;
+}
+.ec-extras-label {
+  margin-right: 8px;
+  color: var(--ec-accent);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* ——— Pedido: PedidosYa y WhatsApp (nunca WooCommerce) ——— */
+.ec-order {
+  margin-top: 20px;
+}
+.ec-ctas {
+  display: grid;
+  gap: 10px;
+}
+.ec-cta {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 66px;
+  padding: 14px 24px;
+  border: 1px solid var(--ec-accent);
+  border-radius: 2px;
+  color: var(--ec-on-accent);
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    color 420ms var(--ease-editorial),
+    letter-spacing 420ms var(--ease-editorial);
+}
+/* Relleno que se retira hacia arriba al pasar el puntero (como los botones de la marca). */
+.ec-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--ec-accent);
+  transform-origin: top;
+  transition: transform 420ms var(--ease-editorial);
+}
+a.ec-cta:hover {
+  color: var(--ec-accent);
+  letter-spacing: 0.2em;
+}
+a.ec-cta:hover::before {
+  transform: scaleY(0);
+}
+.ec-cta-whatsapp {
+  border-color: var(--ec-blanco);
+  color: var(--ec-blanco);
+}
+.ec-cta-whatsapp::before {
+  background: var(--ec-blanco);
+  transform: scaleY(0);
+  transform-origin: bottom;
+}
+a.ec-cta-whatsapp:hover {
+  color: var(--ec-bg);
+}
+a.ec-cta-whatsapp:hover::before {
+  transform: scaleY(1);
+}
+.ec-cta-arrow {
+  flex: none;
+  transition: transform 420ms var(--ease-editorial);
+}
+a.ec-cta:hover .ec-cta-arrow {
+  transform: translateX(4px);
+}
+/* Canal sin configurar: se ve, pero no promete un pedido. */
+.ec-cta.is-off {
+  border: 1px dashed rgb(255 240 220 / 0.38);
+  color: var(--ec-blanco);
+}
+.ec-cta.is-off::before {
+  display: none;
+}
+.ec-cta-state {
+  color: var(--ec-muted);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  white-space: nowrap;
+}
+.ec-note {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  margin: 14px 0 0;
+  color: var(--ec-muted);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* ——— Salida: ola perla hacia la sección siguiente ——— */
+.ec-exit {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 14vh;
+  min-height: 90px;
+  fill: var(--color-pearl);
+  transform-origin: 50% 100%;
+  pointer-events: none;
+}
+
+/* ——— Escritorio: composición asimétrica, bebida enorme ——— */
+@media (min-width: 768px) {
+  .ec-switch {
+    max-width: 380px;
+  }
+  .ec-ctas {
+    grid-template-columns: 1fr 1fr;
+  }
+  /* En dos columnas no hay ancho para etiqueta y estado en una sola línea. */
+  .ec-cta.is-off {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 6px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .ec {
+    padding: 16vh 0 calc(8vh + 120px);
+  }
+  .ec-inner {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: auto auto auto 1fr;
+    column-gap: 32px;
+  }
+  /* Titular monumental a todo el ancho; la escena entra por debajo. */
+  .ec-head {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    position: relative;
+    z-index: 2;
+  }
+  .ec-title {
+    font-size: clamp(5.5rem, 10vw, 11rem);
+    margin-top: 28px;
+  }
+  .ec-title .kt-line {
+    white-space: nowrap;
+  }
+  /* Escalonado editorial: la segunda voz arranca a la derecha. */
+  .ec-title .kt-italic {
+    margin-left: 2.1em;
+  }
+  .ec-sub {
+    font-size: 20px;
+    line-height: 30px;
+  }
+  .ec-switch {
+    grid-column: 1 / 5;
+    grid-row: 2;
+    margin-top: 48px;
+  }
+  .ec-tab {
+    min-height: 68px;
+  }
+  .ec-visual {
+    grid-column: 6 / 13;
+    grid-row: 2 / 5;
+    height: min(96vh, 940px);
+    max-height: none;
+    /* El halo sube detrás de la segunda línea del titular (nunca la bebida). */
+    margin: -9vh calc(var(--kz-gutter) * -1) 0 0;
+    align-self: start;
+  }
+  .ec-depth-word {
+    padding-bottom: 0;
+  }
+  .ec-word {
+    font-size: 21vw;
+  }
+  .ec-halo {
+    width: min(82%, 76vh);
+  }
+  /* Caja al 80 %: la foto (120 % de la caja) llega al ~96 % del alto y el
+     vaso, al ~77 % del área visual, con el sorbete entero. */
+  .ec-product {
+    width: auto;
+    height: 80%;
+  }
+  .ec-tabpanel {
+    grid-column: 1 / 6;
+    grid-row: 3;
+    margin-top: 44px;
+    position: relative;
+    z-index: 2;
+  }
+  .ec-name {
+    font-size: clamp(3.5rem, 5.2vw, 6rem);
+  }
+  .ec-desc {
+    font-size: 20px;
+    line-height: 30px;
+  }
+  .ec-picks-stack {
+    margin-top: 36px;
+  }
+  .ec-pick-list {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .ec-pick {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 20px;
+    min-height: 62px;
+    padding: 18px 0;
+  }
+  .ec-pick-list li:last-child .ec-pick {
+    border-bottom: 1px solid var(--ec-rule);
+  }
+  .ec-pick-name {
+    font-size: 21px;
+    line-height: 26px;
+  }
+  .ec-pick:hover .ec-pick-name,
+  .ec-pick[aria-pressed="true"] .ec-pick-name {
+    transform: translateX(6px);
+  }
+  .ec-cta {
+    min-height: 72px;
+  }
+  .ec-order {
+    grid-column: 1 / 6;
+    grid-row: 4;
+    align-self: start;
+    margin-top: 40px;
+    position: relative;
+    z-index: 2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ec-pill,
+  .ec-tab,
+  .ec-tab-label,
+  .ec-pick,
+  .ec-pick-name,
+  .ec-cta,
+  .ec-cta::before,
+  .ec-cta-arrow {
+    transition: none;
+  }
+}

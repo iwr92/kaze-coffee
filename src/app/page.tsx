@@ -8,6 +8,7 @@ import { Difference } from "@/components/sections/Difference";
 import { Faq } from "@/components/sections/Faq";
 import { FinalConversion } from "@/components/sections/FinalConversion";
 import { HomeBarista } from "@/components/sections/HomeBarista";
+import { KazeEnCasa } from "@/components/sections/KazeEnCasa";
 import { Ritual } from "@/components/sections/Ritual";
 import { TrustStrip } from "@/components/sections/TrustStrip";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -25,6 +26,7 @@ export default async function Home() {
       <BrandHeader />
       <main>
         <CinematicScrollExperience />
+        <KazeEnCasa />
         <TrustStrip />
         <ProductShowcase products={products} />
         <GrindChoice />

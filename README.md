@@ -95,6 +95,8 @@ npm run editorial:build      # genera public/editorial/ (AVIF + WebP)
 
 ```
 src/config/store.ts                     URLs de la tienda
+src/config/channels.ts                  canales de KAZE EN CASA (PedidosYa, WhatsApp)
+src/commerce/drinks.ts                  bebidas de KAZE EN CASA (docs/kaze-en-casa/README.md)
 src/config/site.ts                      dominio e indexación
 src/cinematic/
   manifest.ts                           contrato del manifiesto
@@ -115,10 +117,11 @@ src/commerce/cta.ts, faq.ts             botones, disponibilidad y preguntas frec
 src/config/grind.ts                     guía de moliendas
 src/components/commerce/                ProductShowcase, GrindChoice
 src/components/hero/HeroComposition.tsx hero (cinematográfico y estático)
-src/components/sections/                TrustStrip, HomeBarista, Ritual, Difference, Faq, FinalConversion
+src/components/sections/                KazeEnCasa, TrustStrip, HomeBarista, Ritual, Difference, Faq, FinalConversion
 src/components/motion/                  curvas (ease.ts), revelados (useReveals.ts),
                                         KineticTitle (titulares) y Wind (ráfagas SVG)
 src/styles/v6.css, launch.css           estilos base y secciones comerciales
+src/styles/en-casa.css                  KAZE EN CASA (paleta propia, acotada a .ec)
 scripts/cinematic/build-sequence.mjs    pipeline FFmpeg
 scripts/editorial/build-editorial.mjs   fotografías editoriales
 archive/prototype-v1-webgl/             prototipo anterior (Three.js), fuera del build
